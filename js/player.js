@@ -340,9 +340,11 @@ Player.prototype.getCurseTimers = function() {
     var sp = 20;
     for (var c = 0; c < this.champion.length; c++) {
         var ch = this.getChampion(c);
-        var tm = ch.getMonster().getCurseTimers();
-        if(sp > tm) {
-            sp = tm;
+        if (ch) {
+          var tm = ch.getMonster().getCurseTimers();
+          if(sp > tm) {
+              sp = tm;
+          }
         }
     }
     return sp;
@@ -1793,4 +1795,3 @@ function initPlayers(singlePlayer, quickStart, p1_cid, p2_cid) {
         initPlayersStart([0, 14, 5, 3], 4);
     }
 }
-

@@ -170,12 +170,12 @@ function doKeyDown(e) {
     } else { //Start menu screen
         switch (e.keyCode) {
             case KEY_1:
-                $('canvas').attr('data-game-status', 'menu-champions');
+                canvas.setAttribute('data-game-status', 'menu-champions');
                 players = 1;
                 drawQuickStartUI(1);
                 break
             case KEY_2:
-                $('canvas').attr('data-game-status', 'menu-champions');
+                canvas.setAttribute('data-game-status', 'menu-champions');
                 players = 2;
                 drawQuickStartUI(2);
                 break
@@ -200,11 +200,11 @@ function doKeyDown(e) {
 }
 
 function checkClickEvents() {
-    $(document).on('tap', 'html', function(e) {
-        var t = $(this).find('canvas');
+    //$(document).on('tap', 'html', function(e) {
+    document.onclick = function(e) {
         var x = (e.pageX - (canvas.offsetLeft * scaleReal)) / (scale * scaleReal);
         var y = (e.pageY - (canvas.offsetTop * scaleReal)) / (scale * scaleReal);
-        if (t.attr('data-game-status') === 'started') {
+        if (canvas.getAttribute('data-game-status') === 'started') {
             //if (paused) {
             //	pauseGame(false);
             //}
@@ -216,9 +216,9 @@ function checkClickEvents() {
             if (p > 0) {
                 redrawUI(p - 1);
             }
-        } else if (t.attr('data-game-status') === 'menu') {
+        } else if (canvas.getAttribute('data-game-status') === 'menu') {
             processCanvasInputMenu(x, y);
-        } else if (t.attr('data-game-status') === 'menu-champions') {
+        } else if (canvas.getAttribute('data-game-status') === 'menu-champions') {
             uiChampSelectArea(x, y, currentPlayer);
 
             if (championSelect[currentPlayer].mode === UI_CHARACTER_SELECT_POCKET) {
@@ -238,7 +238,7 @@ function checkClickEvents() {
             }
 
         }
-    });
+    };
 }
 
 function processCanvasInput(pid, x, y) {
@@ -580,11 +580,11 @@ function processCanvasInputMenu(x, y) {
     }else{
 
         if (uiClickInArea(x, y, UI_CLICK_START_ONE_PLAYER)) {
-            $('canvas').attr('data-game-status', 'menu-champions');
+            canvas.setAttribute('data-game-status', 'menu-champions');
             players = 1;
             drawQuickStartUI(0);
         } else if (uiClickInArea(x, y, UI_CLICK_START_TWO_PLAYER)) {
-            $('canvas').attr('data-game-status', 'menu-champions');
+            canvas.setAttribute('data-game-status', 'menu-champions');
             players = 2;
             drawQuickStartUI(0);
         } else if (uiClickInArea(x, y, UI_CLICK_START_QUICK_ONE_PLAYER)) {
@@ -614,7 +614,7 @@ function mouseXY(e) {
         var currentColour = cursorType;
         if (typeof player[0] !== 'undefined') {
             if (typeof player[1] !== 'undefined') {
-                if ($('canvas').attr('data-game-status') === 'menu-champions') {
+                if (canvas.getAttribute('data-game-status') === 'menu-champions') {
                 if (currentPlayer === 0) {
                     cursorType = cursorBlue;
                     if (currentColour !== cursorType) {

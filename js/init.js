@@ -1,6 +1,6 @@
 //var loadingIntervalTimer = 0;
 function initGame() {
-    $('canvas').attr('data-game-status', 'loading');
+    canvas.setAttribute('data-game-status', 'loading');
     loadGfxUIData();
     uiClickArea = uiClickAreas();
 }
@@ -225,7 +225,7 @@ function startGame(singlePlayer, quickStart, p1_cid, p2_cid) {
             championSelect[pl].champID = -1;
         }
     }
-    $('canvas').attr('data-game-status', 'started');
+    canvas.setAttribute('data-game-status', 'started');
     //for(var p in player) {
     //      player[p].message("WELCOME THEE TRAVELLER, TO THE REMAKE OF", colourData['YELLOW'], true);
     //      player[p].message("   BLOODWYCH - REWRITTEN BY MAD BONE    ", colourData['YELLOW'], true);
@@ -375,4 +375,3 @@ function loadDefaultJSONFiles(path) {
         typeID: "Sprites"
     });
 }
-

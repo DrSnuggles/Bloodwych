@@ -108,24 +108,26 @@ function timerAction() {
             var att = 0;
             for (var c = 0; c < pl.champion.length; c++) {
                 var ch = pl.getChampion(c);
-                var tm = ch.getMonster().getCurseTimers();
-                if (ch !== null) {
+                if (ch) {
+                  var tm = ch.getMonster().getCurseTimers();
+                  if (ch !== null) {
                     ch.recruitment.attackTimer++;
                     if (tm > 0 && ch.recruitment.attackTimer % (ch.getAttackSpeed(20) * tmf) === 0) {
-                        if (pl.attacking) {
-                            pl.tryAttack(ch);
-                        }
+                      if (pl.attacking) {
+                        pl.tryAttack(ch);
+                      }
                     }
                     if(ch.getMonster().attacking) {
-                        att++;
+                      att++;
                     }
-                }
-                if (pl.uiLeftPanel.champs[c].damage > 0) {
+                  }
+                  if (pl.uiLeftPanel.champs[c].damage > 0) {
                     if (timerMaster - pl.uiLeftPanel.champs[c].damageTimer >= 20 * tmf) {
-                        pl.uiLeftPanel.champs[c].damageTimer = 0;
-                        pl.uiLeftPanel.champs[c].damage = 0;
-                        redrawUI(p, UI_REDRAW_LEFT);
+                      pl.uiLeftPanel.champs[c].damageTimer = 0;
+                      pl.uiLeftPanel.champs[c].damage = 0;
+                      redrawUI(p, UI_REDRAW_LEFT);
                     }
+                  }
                 }
             }
         }
