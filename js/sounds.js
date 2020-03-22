@@ -6,7 +6,7 @@
 
 function initSounds(soundJson, path){
 
-    path = path.substring(0, path.indexOf('json')) + "sounds/"
+    path = path.substring(0, path.indexOf('json')) + "sounds/";
 
     for (var s in soundJson){
         audioFiles[soundJson[s].id] = new Audio(path+soundJson[s].filename);
@@ -18,7 +18,7 @@ function initSounds(soundJson, path){
 function playSound(soundName){
     if(soundEnabled) {
         if(soundName !== 'SOUND_NONE') {
-            audioFiles[soundName].src = audioFiles[soundName].src;
+            audioFiles[soundName].duration = 0;
             audioFiles[soundName].play();
         }
     }
@@ -27,16 +27,17 @@ function playSound(soundName){
 function playSoundLoop(soundName){
     if(soundEnabled) {
         if(soundName !== 'SOUND_NONE') {
-            audioFiles[soundName].src = audioFiles[soundName].src;
             audioFiles[soundName].loop = true;
-            audioFiles[soundName].volume = 0.3
+            audioFiles[soundName].volume = 0.3;
+            audioFiles[soundName].duration = 0;
             audioFiles[soundName].play();
         }
     }
 }
 
 function pauseSound(soundName){
-    if(soundEnabled) {
+    // only pause when it's already playing
+    if(soundEnabled && !audioFiles[soundName].paused && audioFiles[soundName].duration > 0) {
         audioFiles[soundName].pause();
     }
 }
