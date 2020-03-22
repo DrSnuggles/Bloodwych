@@ -18,7 +18,7 @@ function initSounds(soundJson, path){
 function playSound(soundName){
     if(soundEnabled) {
         if(soundName !== 'SOUND_NONE') {
-            audioFiles[soundName].duration = 0;
+            audioFiles[soundName].currentTime = 0;
             audioFiles[soundName].play();
         }
     }
@@ -29,7 +29,7 @@ function playSoundLoop(soundName){
         if(soundName !== 'SOUND_NONE') {
             audioFiles[soundName].loop = true;
             audioFiles[soundName].volume = 0.3;
-            audioFiles[soundName].duration = 0;
+            audioFiles[soundName].currentTime = 0;
             audioFiles[soundName].play();
         }
     }
@@ -37,7 +37,7 @@ function playSoundLoop(soundName){
 
 function pauseSound(soundName){
     // only pause when it's already playing
-    if(soundEnabled && !audioFiles[soundName].paused && audioFiles[soundName].duration > 0) {
+    if(soundEnabled && !audioFiles[soundName].paused && audioFiles[soundName].currentTime > 0) {
         audioFiles[soundName].pause();
     }
 }
