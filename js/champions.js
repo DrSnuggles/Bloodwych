@@ -507,7 +507,15 @@ Champion.prototype.useItem = function(it, ac, param) {
     //Change item to another item
     ac1 = getObjectByKeys(itemJson[it.id], ac, 'changeToItem');
     if(typeof ac1 !=="undefined") {
-        it.setPocketItem(ac1.getVar());
+        //it.setPocketItem(ac1.getVar());
+        var tid = -1;
+        for (let i = 0; i < itemJson.length; i++) {
+          if (itemJson[i].id == ac1) {
+            tid = i;
+            break;
+          }
+        }
+        if (tid > -1) it.setPocketItem(tid);
         suc = true;
     }
 

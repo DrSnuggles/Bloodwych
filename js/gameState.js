@@ -35,7 +35,7 @@ function loadGame(g) {
 		clearCanvas();
 		for(var p in player) {
 			player[p] = castObject(player[p], 'Player');
-			redrawUI(player[p].id);                        
+			redrawUI(player[p].id);
 		}
 		for(var c in champion) {
 			champion[c] = castObject(champion[c], 'Champion');
@@ -53,7 +53,7 @@ function loadGame(g) {
 //                                }else{
                                     monster[t][m]["ref"] = null;
 //                                }
-				
+
 			}
 		}
 		for (var t = 0; t < 6; t++) {
@@ -82,7 +82,7 @@ function loadGame(g) {
 			}
 		}
                 for(var p in player){
-                    for(var c in player[p].champion){             
+                    for(var c in player[p].champion){
                         var id = champion[player[p].champion[c]].id;
                             initMonsterGfxNew(champion[id].getMonster());
                         }
@@ -96,12 +96,12 @@ function saveGame(g, name) {
 	save.gameData = {
 		name: name,
 		version: VERSION,
-		tower: $.extend(true, {}, tower),
-		player: $.extend(true, {}, player),
-		champion: $.extend(true, {}, champion),
-		monster: $.extend(true, {}, monster),
-		item: $.extend(true, {}, item),
-		projectile: $.extend(true, {}, projectile),
+		tower: Object.assign({}, tower),
+		player: Object.assign({}, player),
+		champion: Object.assign({}, champion),
+		monster: Object.assign({}, monster),
+		item: Object.assign({}, item),
+		projectile: Object.assign({}, projectile),
 		variables: {
 			timerMaster: timerMaster,
 			timerMonsterMove: timerMonsterMove,

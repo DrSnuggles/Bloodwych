@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -128,7 +128,7 @@ function posToCoordinates(pos, x, y, d) {
 		case 5:
 			newy = y + (3 * xy.y) + (2 * xy.x);
 			newx = x + (3 * xy.x) - (2 * xy.y);
-			break; //-3 +2 
+			break; //-3 +2
 		case 6:
 			newy = y + (3 * xy.y) - (2 * xy.x);
 			newx = x + (3 * xy.x) + (2 * xy.y);
@@ -148,7 +148,7 @@ function posToCoordinates(pos, x, y, d) {
 		case 10:
 			newy = y + (2 * xy.y) + (1 * xy.x);
 			newx = x + (2 * xy.x) - (1 * xy.y);
-			break; //-2 +1                
+			break; //-2 +1
 		case 11:
 			newy = y + (2 * xy.y) - (1 * xy.x);
 			newx = x + (2 * xy.x) + (1 * xy.y);
@@ -203,12 +203,12 @@ function coordinatesToPos(xt, yt, x, y, d) {
 	if (yt == y + (4 * xy.y) + (1 * xy.x) && xt == x + (4 * xy.x) - (1 * xy.y)) return 2; //-4 +1
 	if (yt == y + (4 * xy.y) - (1 * xy.x) && xt == x + (4 * xy.x) + (1 * xy.y)) return 3; //-4 -1
 	if (yt == y + (4 * xy.y) - (0 * xy.x) && xt == x + (4 * xy.x) + (0 * xy.y)) return 4; //-4 0
-	if (yt == y + (3 * xy.y) + (2 * xy.x) && xt == x + (3 * xy.x) - (2 * xy.y)) return 5; //-3 +2 
+	if (yt == y + (3 * xy.y) + (2 * xy.x) && xt == x + (3 * xy.x) - (2 * xy.y)) return 5; //-3 +2
 	if (yt == y + (3 * xy.y) - (2 * xy.x) && xt == x + (3 * xy.x) + (2 * xy.y)) return 6; //-3 -2
 	if (yt == y + (3 * xy.y) + (1 * xy.x) && xt == x + (3 * xy.x) - (1 * xy.y)) return 7; //-3 +1
 	if (yt == y + (3 * xy.y) - (1 * xy.x) && xt == x + (3 * xy.x) + (1 * xy.y)) return 8; //-3 -1
 	if (yt == y + (3 * xy.y) - (0 * xy.x) && xt == x + (3 * xy.x) - (0 * xy.y)) return 9; //-3 0
-	if (yt == y + (2 * xy.y) + (1 * xy.x) && xt == x + (2 * xy.x) - (1 * xy.y)) return 10; //-2 +1                
+	if (yt == y + (2 * xy.y) + (1 * xy.x) && xt == x + (2 * xy.x) - (1 * xy.y)) return 10; //-2 +1
 	if (yt == y + (2 * xy.y) - (1 * xy.x) && xt == x + (2 * xy.x) + (1 * xy.y)) return 11; //-2 -1
 	if (yt == y + (2 * xy.y) - (0 * xy.x) && xt == x + (2 * xy.x) + (0 * xy.y)) return 12; //-2 0
 	if (yt == y + (1 * xy.y) + (1 * xy.x) && xt == x + (1 * xy.x) - (1 * xy.y)) return 13; //-1 +1
@@ -449,6 +449,7 @@ function getVarArray(arr) {
 }
 
 function clone(o) {
-	var j = $.extend(true, {}, o);
+	//var j = $.extend(true, {}, o);
+	var j = Object.assign({}, o);
 	return j;
 }

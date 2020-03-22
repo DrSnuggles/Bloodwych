@@ -1,11 +1,12 @@
 //var loadingIntervalTimer = 0;
 function initGame() {
-    canvas.setAttribute('data-game-status', 'loading');
+    // moved to main.html canvas.setAttribute('data-game-status', 'loading');
     loadGfxUIData();
     uiClickArea = uiClickAreas();
 }
 
 function loadGFXData() {
+    //console.log("loadGfxData");
     preload.loadFile({
         src: 'data/' + GAME_ID[GAME_BLOODWYCH] + '/json/graphics.json',
         callback: "loadJSONData",
@@ -15,9 +16,11 @@ function loadGFXData() {
 }
 
 function loadDefaultGfx(event) {
+    //console.log("loadDefaultGfx");
+    //console.log(event);
     defaultManifest = event;
     if(gameType !== GAME_BLOODWYCH) {
-        preload = new createjs.LoadQueue(false);
+        //preload = new createjs.LoadQueue(false);
         preload.loadFile({
             src: 'data/' + GAME_ID[gameType] + '/json/graphics.json',
             callback: "loadJSONData1",
@@ -30,6 +33,7 @@ function loadDefaultGfx(event) {
 }
 
 function loadCustomGfx(event) {
+    //console.log("loadCustomGfx");
     for(var i in event.manifest) {
         for(var x in defaultManifest.manifest) {
             if (defaultManifest.manifest[x].id === event.manifest[i].id) {
@@ -37,7 +41,7 @@ function loadCustomGfx(event) {
             }
         }
     }
-    var preload = new createjs.LoadQueue(false);
+    //var preload = new createjs.LoadQueue(false);
     preload.maintainScriptOrder = true;
     if(gameType !== GAME_BLOODWYCH) {
         loadDefaultJSONFiles(GAME_ID[gameType]);
@@ -166,7 +170,7 @@ function initJSONData() {
     parseJSONValues(spellPartJson, paletteData, 'recolour');
     parseJSONValues(spellPartJson, colourData, 'recolour');
 
-    preload = new createjs.LoadQueue(false);
+    //preload = new createjs.LoadQueue(false);
     preload.loadFile({
         src: 'data/' + GAME_ID[gameType] + '/json/tower.json',
         callback: "loadJSONData2",

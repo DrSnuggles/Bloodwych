@@ -297,7 +297,7 @@ function gfxLoadImages(img, result) {
 }
 
 function gfxLoadImage(folder, type, item, sub) {
-    console.log("LoadImage: ", folder, type, item, sub);
+    //console.log("LoadImage: ", folder, type, item, sub);
     if (typeof type === 'string') {
         gfxLoaded.count++;
         var id = '';
