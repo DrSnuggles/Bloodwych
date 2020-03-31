@@ -300,7 +300,7 @@ Champion.prototype.hasRangedWeapon = function() {
         if(typeof typ !== "undefined" || typeof id !== "undefined") {
             var it2 = itemJson[hand[1 - s].id];//this.pocket[hand[1 - s]];
             //if((typeof id !== "undefined" && $.inArray(it2.id, id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
-            if((typeof id !== "undefined" && it2.id.indexOf(id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
+            if((typeof id !== "undefined" && id.indexOf(it2.id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
                 var sh = getObjectByKeys(it2, 'onShoot');
                 if(typeof sh !== "undefined") {
                     return true;
@@ -341,7 +341,7 @@ Champion.prototype.itemAllowedOnSlot = function(it, s) {
             });
         }
         //if((s !== POCKET_ARMOUR && s !== POCKET_SHIELD && s !== POCKET_GLOVES) || (typeof as !== "undefined" && as.getVar() === s && (typeof pf === "undefined" || $.inArray(this.prof, pf) > -1))) {
-        if((s !== POCKET_ARMOUR && s !== POCKET_SHIELD && s !== POCKET_GLOVES) || (typeof as !== "undefined" && as.getVar() === s && (typeof pf === "undefined" || this.prof.indexOf(pf) > -1))) {
+        if((s !== POCKET_ARMOUR && s !== POCKET_SHIELD && s !== POCKET_GLOVES) || (typeof as !== "undefined" && as.getVar() === s && (typeof pf === "undefined" || pf.indexOf(this.prof) > -1))) {
             return true;
         }
         return false;
@@ -364,7 +364,7 @@ Champion.prototype.useItem = function(it, ac, param) {
         for(var h = 0; h < hand.length; h++) {
             var it2 = this.pocket[hand[h]];
             //if((typeof id !== "undefined" && $.inArray(itemJson[it2.id].id, id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
-            if((typeof id !== "undefined" && itemJson[it2.id].id.indexOf(id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
+            if((typeof id !== "undefined" && id.indexOf(itemJson[it2.id].id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
                 var sh = getObjectByKeys(itemJson[it2.id], 'onShoot');
                 if(typeof sh !== "undefined") {
                     var pw2 = getObjectByKeys(use, 'damage');

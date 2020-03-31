@@ -5,7 +5,7 @@ Run = function() {
 		window.oRequestAnimationFrame ||
 		window.msRequestAnimationFrame ||
 		function(callback) {
-			window.setTimeout(callback, 10);
+			window.setTimeout(callback, 1000/60);
 		};
 	window.requestAnimFrame = animFrame;
 
@@ -33,7 +33,7 @@ Run = function() {
                                     render.update();
                             }
                             last = now;
-                            requestAnimFrame(run);                            
+                            requestAnimFrame(run);
                         }
 
 
