@@ -87,10 +87,6 @@ Movement keys for player 2 are 7,8,9,4,5,6
     - toggle music + sound
     - Proper random banners
     - Avoid switched wall and doors to close when player/monster is on it
-    - BUG Setting the value of 'savegame3' exceeded the quota.
-           True, localStorage quota is 5mb. each save > 1MB + autosave
-           Reduce to just 3 saves + autosave? Alternative save to file and make
-           load via drag'n'drop.
     - COD Beguile spell
     - COD Fix Big monster 'edge of screen'
     - BUG Arrows on Right UI sometimes show over pockets or scroll
@@ -105,6 +101,8 @@ Movement keys for player 2 are 7,8,9,4,5,6
 
 ## TaDa / History / Changelog
     - 03.04.2020 Savefile as download / Load savestate via DnD
+        Setting the value of 'savegame3' exceeded the localStorage quota of 5mb. Each save > 1MB + autosave.
+        Added F4=QuickSave + F9=QuickLoad.
     - 30.03.2020 RMB closes opened menus
     - 22.03.2020 play() request was interrupted
     - 22.03.2020 food/water is now consumed
