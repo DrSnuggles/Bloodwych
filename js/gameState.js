@@ -14,23 +14,26 @@ function getGameName(g) {
 function loadGame(g) {
 	var save = new gameState('savegame' + g);
 	save.gameData = JSON.parse(localStorage.getItem(save.fileName));
-	if(save.gameData !== null) {
-		versionThis = save.gameData.version;
-		tower = save.gameData.tower;
-		player = save.gameData.player;
-		champion = save.gameData.champion;
-		monster = save.gameData.monster;
-		item = save.gameData.item;
-		projectile = save.gameData.projectile;
-		timerMaster = save.gameData.variables.timerMaster;
-		timerMonsterMove = save.gameData.variables.timerMonsterMove;
-		timerChampionStats = save.gameData.variables.timerChampionStats;
-		towerThis = save.gameData.variables.towerThis;
-		monsterTeamIdMax = save.gameData.variables.monsterTeamIdMax;
-		dungeonSpellTimer = save.gameData.variables.dungeonSpellTimer;
-		dungeonSpellList = save.gameData.variables.dungeonSpellList;
-		soundEnabled = save.gameData.variables.soundEnabled;
-	//	activeSpellTimer = save.gameData.variables.activeSpellTimer;
+	loadGameData(save.gameData);
+}
+function loadGameData(dat) {
+	if(dat !== null) {
+		versionThis = dat.version;
+		tower = dat.tower;
+		player = dat.player;
+		champion = dat.champion;
+		monster = dat.monster;
+		item = dat.item;
+		projectile = dat.projectile;
+		timerMaster = dat.variables.timerMaster;
+		timerMonsterMove = dat.variables.timerMonsterMove;
+		timerChampionStats = dat.variables.timerChampionStats;
+		towerThis = dat.variables.towerThis;
+		monsterTeamIdMax = dat.variables.monsterTeamIdMax;
+		dungeonSpellTimer = dat.variables.dungeonSpellTimer;
+		dungeonSpellList = dat.variables.dungeonSpellList;
+		soundEnabled = dat.variables.soundEnabled;
+	//	activeSpellTimer = dat.variables.activeSpellTimer;
 
 		clearCanvas();
 		for(var p in player) {
@@ -114,16 +117,95 @@ function saveGame(g, name) {
 //			activeSpellTimer: activeSpellTimer
 		}
 	};
-	localStorage.setItem(save.fileName, JSON.stringify(save.gameData));
+	// DrSnuggles: added fileSave because storage quota = 5MB but stores as UTF-16 internally
+	var content = JSON.stringify(save.gameData);
+	if (debug || g < 99) {
+		download(content, save.fileName+"_"+save.gameData.name, "application/json");
+	}
+
+	// check quota exceeds, better reduce table size to just 4 rows
+	// https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
+	// each save >1MB max allowed = 4 incl. autosave
+	var _lsTotal = 0, _xLen, _x, _count = 0;
+	for(_x in localStorage) {
+		if(!localStorage.hasOwnProperty(_x)){continue;}
+		_xLen = ((localStorage[_x].length + _x.length)* 2);
+		_lsTotal += _xLen;
+		_count++;
+		//console.log(_x.substr(0,50)+" = "+ (_xLen/1024).toFixed(2)+" KB")
+	};
+	//console.log("Total = " + (_lsTotal / 1024).toFixed(2) + " KB");
+	// check if it's new
+	if (!(_count >= 4 && !localStorage[save.fileName])) {
+		localStorage.setItem(save.fileName, JSON.stringify(save.gameData));
+		// else it would be entry #5 and out of quota
+	}
+
 	if(g < 99) {
 		player[0].message(TEXT_GAME_SAVED, colourData['GREEN']);
 	}
 };
 
+/* not used yet
 function deleteGame(g) {
 	localStorage.removeItem('savegame' + g);
 }
+*/
 
 function castObject(ob, to) {
 	return Types[ob.__type].revive(ob);
+}
+
+//
+// QuickLoad / QuickSave
+// F1, F3, F5, F6, F11, F12 are already in use
+//
+addEventListener("keyup", function(e) {
+	var handled = false;
+	switch (e.key) {
+		case "F4":
+			// quicksave
+			saveGame(98, "quicksave");
+			handled = true;
+			break;
+		case "F9":
+			// quickload
+			loadGame(98);
+			handled = true;
+			break;
+		default:
+
+	}
+	if (handled) e.preventDefault();
+}, false);
+
+/*  Drop handler by DrSnuggles
+    load JSON files with this method
+*/
+var dropArea = window;
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults (e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+dropArea.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+  let dt = e.dataTransfer;
+  let files = dt.files;
+  var file = files[0]; // just use first dropped file
+  var reader = new FileReader();
+  var filename = file.name;
+  reader.onload = function(ev) {
+    try {
+      var loadedJSON = JSON.parse(ev.target.result);
+      loadGameData(loadedJSON);
+    } catch(e){}
+  };
+  reader.readAsText(file);
 }
