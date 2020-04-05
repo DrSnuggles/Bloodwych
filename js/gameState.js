@@ -4,7 +4,8 @@ function gameState(fileName) {
 }
 
 function getGameName(g) {
-	var json = JSON.parse(localStorage.getItem('savegame' + g));
+	var tmp = localStorage.getItem('savegame' + g);
+	var json = TryUnZIP2JSON(tmp);
 	if(json !== null) {
 		return json.name;
 	}
@@ -13,7 +14,7 @@ function getGameName(g) {
 
 function loadGame(g) {
 	var save = new gameState('savegame' + g);
-	save.gameData = JSON.parse(localStorage.getItem(save.fileName));
+	save.gameData = TryUnZIP2JSON( localStorage.getItem(save.fileName) );
 	loadGameData(save.gameData);
 }
 function loadGameData(dat) {
@@ -119,27 +120,33 @@ function saveGame(g, name) {
 	};
 	// DrSnuggles: added fileSave because storage quota = 5MB but stores as UTF-16 internally
 	var content = JSON.stringify(save.gameData);
+	// download plain version
 	if (debug || g < 99) {
 		download(content, save.fileName+"_"+save.gameData.name, "application/json");
 	}
 
-	// check quota exceeds, better reduce table size to just 4 rows
-	// https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
-	// each save >1MB max allowed = 4 incl. autosave
-	var _lsTotal = 0, _xLen, _x, _count = 0;
-	for(_x in localStorage) {
-		if(!localStorage.hasOwnProperty(_x)){continue;}
-		_xLen = ((localStorage[_x].length + _x.length)* 2);
-		_lsTotal += _xLen;
-		_count++;
-		//console.log(_x.substr(0,50)+" = "+ (_xLen/1024).toFixed(2)+" KB")
-	};
-	//console.log("Total = " + (_lsTotal / 1024).toFixed(2) + " KB");
-	// check if it's new
-	if (!(_count >= 4 && !localStorage[save.fileName])) {
-		localStorage.setItem(save.fileName, JSON.stringify(save.gameData));
-		// else it would be entry #5 and out of quota
-	}
+	// ZIP it
+	content = new TextEncoder().encode(content); // now content is uint8array
+	content = UZIP.deflateRaw( content );
+	/* no longer needed, coz zipped now
+			// check quota exceeds, better reduce table size to just 4 rows
+			// https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
+			// each save >1MB max allowed = 4 incl. autosave
+			var _lsTotal = 0, _xLen, _x, _count = 0;
+			for(_x in localStorage) {
+				if(!localStorage.hasOwnProperty(_x)){continue;}
+				_xLen = ((localStorage[_x].length + _x.length)* 2);
+				_lsTotal += _xLen;
+				_count++;
+				//console.log(_x.substr(0,50)+" = "+ (_xLen/1024).toFixed(2)+" KB")
+			};
+			//console.log("Total = " + (_lsTotal / 1024).toFixed(2) + " KB");
+			// check if it's new
+			if (!(_count >= 4 && !localStorage[save.fileName])) {
+				// else it would be entry #5 and out of quota
+			}
+	*/
+	localStorage.setItem(save.fileName, content);
 
 	if(g < 99) {
 		player[0].message(TEXT_GAME_SAVED, colourData['GREEN']);
@@ -208,4 +215,20 @@ function handleDrop(e) {
     } catch(e){}
   };
   reader.readAsText(file);
+}
+
+function TryUnZIP2JSON(t) {
+	// tries to unZIP again, if not possible return JSON from plain input
+	var ret;
+	try {
+		ret = JSON.parse(t);
+	} catch(e) {
+		t = t.split(","); // string -> array
+		//tmp = new TextDecoder("UTF-8").decode(tmp); // uint8array -> buffer
+		t = new Uint8Array(t); // array->arraybuffer
+		t = UZIP.inflateRaw(t); // unzip
+		t = new TextDecoder("UTF-8").decode(t); // arraybuffer->string
+	}
+	ret = JSON.parse(t);
+	return ret;
 }

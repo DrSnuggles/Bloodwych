@@ -566,7 +566,7 @@ function godMode() {
                 if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {
                     for (var slot = 0; slot < 8; slot++) {
                         if (uiClickInArea(x, y, slot, p, gameStateSelectGrid)) {
-                            console.log("Slot", slot);
+                            //console.log("Slot", slot);
                             p.message("SAVE GAME - CHANGE NAME OR ENTER TO SAVE", colourData['GREEN'], false, 0);
                             var inp = document.getElementById('save-game');
                             inp.blur();
@@ -612,7 +612,7 @@ function godMode() {
     //});
     //$('input.save-game').focusout(function() {
     document.getElementById('save-game').onblur = function(e) {
-      console.log("blur");
+      //console.log("blur");
         e.target.style.display = 'none'; //$(this).hide();
         var p = saveGames.playerID;
         if (typeof p !== 'undefined' && player[p].uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {

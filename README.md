@@ -100,6 +100,7 @@ Movement keys for player 2 are 7,8,9,4,5,6
     + BUG Player should be able to move backwards on stairs (tested, working)
 
 ## TaDa / History / Changelog
+    - 05.04.2020 make use of UZIP to store 10 saves in localStorage
     - 03.04.2020 Savefile as download / Load savestate via DnD
         Setting the value of 'savegame3' exceeded the localStorage quota of 5mb. Each save > 1MB + autosave.
         Added F4=QuickSave + F9=QuickLoad.
