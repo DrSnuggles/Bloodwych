@@ -532,6 +532,7 @@ DrS.xhr = function(url, cb, type) {
 	xhr.send(null);
 };
 DrS.loadZIP = function(zip, cb) {
+	//loadingScreen();
 	DrS.xhr('./data/'+ zip +'.zip', function(zdat){
 		DrS[zip] = UZIP.parse(zdat);
 		if (cb) cb();
@@ -567,5 +568,9 @@ DrS.download = function(content, fileName, mimeType) {
 	// i preload std BW
 	DrS.loadZIP('BW', function(){
 		// fade out loading screen
+		scrLoader.classList.add("fadeOut");
+		setTimeout(function(){
+			document.body.removeChild(scrLoader);
+		},1000);
 	});
 })();

@@ -61,6 +61,29 @@ canvas[data-game-status="loading"] {
 	background-size: 100%;
 }
 
+#scrLoader {
+	background: #000 url(../images/behemoth.png) center center no-repeat;
+	image-rendering: pixelated;
+	background-size: contain;
+	z-index: 1;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	opacity: 1;
+}
+.fadeAble {
+	-webkit-transition: opacity 1s ease-in-out;
+	-moz-transition: opacity 1s ease-in-out;
+	-ms-transition: opacity 1s ease-in-out;
+	-o-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+}
+#scrLoader.fadeOut {
+  opacity: 0;
+}
+
 /* DEBUG */
 section.info {
 	clear: both;

@@ -76,7 +76,6 @@ Movement keys for player 2 are 7,8,9,4,5,6
     - Add drop out to save state file
     - screen scaling
     - single player scaling
-    - fading behemoth loading screen
     - build deploy minimized version
     - toggle music + sound
     - Proper random banners
@@ -95,6 +94,7 @@ Movement keys for player 2 are 7,8,9,4,5,6
 
 ## TaDa / History / Changelog
     - 13.04.2020 change ingame loading behaviour, preload classic BW
+                 fading behemoth loading screen
                  key inputs do now work on PreStart screen
     - 05.04.2020 make use of UZIP to store 10 saves in localStorage
     - 03.04.2020 Savefile as download / Load savestate via DnD
