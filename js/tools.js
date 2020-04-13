@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -128,7 +128,7 @@ function posToCoordinates(pos, x, y, d) {
 		case 5:
 			newy = y + (3 * xy.y) + (2 * xy.x);
 			newx = x + (3 * xy.x) - (2 * xy.y);
-			break; //-3 +2 
+			break; //-3 +2
 		case 6:
 			newy = y + (3 * xy.y) - (2 * xy.x);
 			newx = x + (3 * xy.x) + (2 * xy.y);
@@ -148,7 +148,7 @@ function posToCoordinates(pos, x, y, d) {
 		case 10:
 			newy = y + (2 * xy.y) + (1 * xy.x);
 			newx = x + (2 * xy.x) - (1 * xy.y);
-			break; //-2 +1                
+			break; //-2 +1
 		case 11:
 			newy = y + (2 * xy.y) - (1 * xy.x);
 			newx = x + (2 * xy.x) + (1 * xy.y);
@@ -203,12 +203,12 @@ function coordinatesToPos(xt, yt, x, y, d) {
 	if (yt == y + (4 * xy.y) + (1 * xy.x) && xt == x + (4 * xy.x) - (1 * xy.y)) return 2; //-4 +1
 	if (yt == y + (4 * xy.y) - (1 * xy.x) && xt == x + (4 * xy.x) + (1 * xy.y)) return 3; //-4 -1
 	if (yt == y + (4 * xy.y) - (0 * xy.x) && xt == x + (4 * xy.x) + (0 * xy.y)) return 4; //-4 0
-	if (yt == y + (3 * xy.y) + (2 * xy.x) && xt == x + (3 * xy.x) - (2 * xy.y)) return 5; //-3 +2 
+	if (yt == y + (3 * xy.y) + (2 * xy.x) && xt == x + (3 * xy.x) - (2 * xy.y)) return 5; //-3 +2
 	if (yt == y + (3 * xy.y) - (2 * xy.x) && xt == x + (3 * xy.x) + (2 * xy.y)) return 6; //-3 -2
 	if (yt == y + (3 * xy.y) + (1 * xy.x) && xt == x + (3 * xy.x) - (1 * xy.y)) return 7; //-3 +1
 	if (yt == y + (3 * xy.y) - (1 * xy.x) && xt == x + (3 * xy.x) + (1 * xy.y)) return 8; //-3 -1
 	if (yt == y + (3 * xy.y) - (0 * xy.x) && xt == x + (3 * xy.x) - (0 * xy.y)) return 9; //-3 0
-	if (yt == y + (2 * xy.y) + (1 * xy.x) && xt == x + (2 * xy.x) - (1 * xy.y)) return 10; //-2 +1                
+	if (yt == y + (2 * xy.y) + (1 * xy.x) && xt == x + (2 * xy.x) - (1 * xy.y)) return 10; //-2 +1
 	if (yt == y + (2 * xy.y) - (1 * xy.x) && xt == x + (2 * xy.x) + (1 * xy.y)) return 11; //-2 -1
 	if (yt == y + (2 * xy.y) - (0 * xy.x) && xt == x + (2 * xy.x) + (0 * xy.y)) return 12; //-2 0
 	if (yt == y + (1 * xy.y) + (1 * xy.x) && xt == x + (1 * xy.x) - (1 * xy.y)) return 13; //-1 +1
@@ -449,6 +449,123 @@ function getVarArray(arr) {
 }
 
 function clone(o) {
-	var j = $.extend(true, {}, o);
+	//var j = $.extend(true, {}, o);
+	var j = Object.assign({}, o);
 	return j;
 }
+
+//
+// DrSnuggles added
+//
+
+// will move and/or structure later
+var DrS = {
+	useZIP: true,
+};
+DrS.get = function(url, type, cb) {
+	if (DrS.useZIP) {
+		var tmp;
+
+		// get path = gametype from url
+		if (url.indexOf('data/BW/') !== -1) {
+			tmp = DrS.BW[ url.substr(8) ];
+		}
+		if (url.indexOf('data/EXT/') !== -1) {
+			tmp = DrS.EXT[ url.substr(9) ];
+		}
+		if (url.indexOf('data/BOS/') !== -1) {
+			tmp = DrS.BOS[ url.substr(9) ];
+		}
+
+		// not found
+		if (typeof tmp === 'undefined') {
+			console.log('Resource '+ url +' not found');
+			return;
+		}
+
+		// return types
+		if (type === 'str') {
+			tmp = DrS.u8ToStr(tmp);
+		}
+		if (type === 'json') {
+			tmp = JSON.parse( DrS.u8ToStr(tmp) );
+		}
+		if (type === 'img') {
+			var t = String.fromCharCode.apply(null, tmp); // string
+			t = btoa(t); // base64
+			tmp = new Image();
+			tmp.src = 'data:image/png;base64,'+ t;
+			if (cb) {
+				tmp.onload = function(){
+					cb( tmp );
+				};
+			}
+		}
+
+		// callback or return
+		if (cb) {
+			if (type !== 'img') cb( tmp );
+		} else {
+			return tmp;
+		}
+
+	} else {
+		xhr(url, cb, type);
+	}
+};
+DrS.xhr = function(url, cb, type) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', url, true);
+	xhr.responseType = type;
+	xhr.onload = function() {
+		if (cb) {
+			if (type === 'arraybuffer') {
+				cb(xhr.response);
+			} else {
+				cb(xhr.responseText);
+			}
+		}
+	}
+	xhr.onerror = function() {
+		console.error('XHR load error');
+	};
+	xhr.send(null);
+};
+DrS.loadZIP = function(zip, cb) {
+	DrS.xhr('./data/'+ zip +'.zip', function(zdat){
+		DrS[zip] = UZIP.parse(zdat);
+		if (cb) cb();
+	}, 'arraybuffer');
+};
+DrS.u8ToStr = function(arr) {
+	return new TextDecoder('utf-8').decode(arr);
+};
+DrS.download = function(content, fileName, mimeType) {
+	var a = document.createElement('a');
+	mimeType = mimeType || 'application/octet-stream';
+	if (navigator.msSaveBlob) { // IE10
+		navigator.msSaveBlob(new Blob([content], {
+			type: mimeType
+		}), fileName);
+	} else if (URL && 'download' in a) { //html5 A[download]
+		a.href = URL.createObjectURL(new Blob([content], {
+			type: mimeType
+		}));
+		a.setAttribute('download', fileName);
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	} else {
+		location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+	}
+};
+
+//
+// Init
+//
+(function(){
+	// i preload std BW
+	DrS.loadZIP('BW', function(){
+		// fade out loading screen
+	});
+})();

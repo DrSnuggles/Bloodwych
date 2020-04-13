@@ -332,7 +332,7 @@ function executeSpell(s, act, tar, pow) {
                         if (it.location.tower === towerThis && it.location.floor === f && it.location.x === x && it.location.y === y) {
                             var rv = itemJson[it.id].revive;
                             if (typeof rv !== "undefined") {
-                                var c = $.inArray(rv, CHAMPION_ID); //it.id - 'ITEM_BLODWYN_RIP';
+                                var c = CHAMPION_ID.indexOf(rv);//$.inArray(rv, CHAMPION_ID); //it.id - 'ITEM_BLODWYN_RIP';
                                 if (c > -1) {
                                     item[towerThis].splice(i, 1);
                                     champion[c].stat.hp = 0;
@@ -546,7 +546,8 @@ function executeSpell(s, act, tar, pow) {
                                 var slot = pck[p].getVar();
                                 var itm = itemJson[ch.pocket[slot].id];
                                 if (typeof itm !== "undefined") {
-                                    if ((typeof fTyp !== "undefined" && $.inArray(itm.type, fTyp) > -1) || (typeof fId !== "undefined" && $.inArray(itm.id, fId) > -1)) {
+                                    //if ((typeof fTyp !== "undefined" && $.inArray(itm.type, fTyp) > -1) || (typeof fId !== "undefined" && $.inArray(itm.id, fId) > -1)) {
+                                    if ((typeof fTyp !== "undefined" && fTyp.indexOf(itm.type) > -1) || (typeof fId !== "undefined" && fId.indexOf(itm.id) > -1)) {
                                         var tId = chi.toId;
                                         if(typeof tId === "undefined") {
                                             tId = [null];
@@ -1013,4 +1014,3 @@ function updateDungeonSpells() {
         }
     }
 }
-

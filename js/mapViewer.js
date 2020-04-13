@@ -118,7 +118,7 @@ function createImageBlock(imgImage,intPosX,intPosY,intRotation){
         var yy = parseInt(evt.target.name.substr(loc+1,evt.target.name.length - loc))/intBlockSize;
 
         var hex = window.opener.tower[window.opener.towerThis].floor[window.opener.player[0].floor].Map[xx][yy];
-        $('#BlockData').text("X:" + xx + " Y:" + yy + " Block: " + hex +" Binary: " + window.opener.hex2bin(hex));
+        BlockData.innerText = "X:" + xx + " Y:" + yy + " Block: " + hex +" Binary: " + window.opener.hex2bin(hex);
 
         getBlockData(hex);
 
@@ -500,12 +500,12 @@ function getScrollText(strHex){
 function getBlockData(strHex){
 
     try {
-            $('#BlockData').append('</br><p>Scroll Data: '+getScrollText(strHex)+'</p>');
+            BlockData.innerHTML += '</br><p>Scroll Data: '+getScrollText(strHex)+'</p>';
         }catch (e){}
 
         try{
             var triggerActionID = window.opener.tower[window.opener.towerThis].triggers[parseInt(window.opener.getHexToBinaryPosition(strHex, 0, 5),16).toString(10)][0]/2;
-            $('#BlockData').append('<p>Switch Event: '+window.opener.switchName[triggerActionID]+'</p>');
+            BlockData.innerHTML += '<p>Switch Event: '+window.opener.switchName[triggerActionID]+'</p>';
         }catch(e){}
 
 }

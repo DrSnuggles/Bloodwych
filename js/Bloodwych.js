@@ -29,9 +29,16 @@ function createDebugWindow(){
 
 }
 
-$(function() {
+// DrS: to get rid of jQuery .data() for savegames
+var saveGames = {
+  playerID: 0,
+  slotID: 0,
+};
+
+(function() {
     initGame();
 
+    // ToDo: too large, throws warning, maybe move into rAF canvas renderer
     canvas.style.cursor = "url('data/" + GAME_ID[GAME_BLOODWYCH] + "/images/misc/cursor0.png'),auto";
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -57,12 +64,17 @@ $(function() {
             redrawUI(0, UI_REDRAW_LEFT);
         }
     }
-});
+})();
 
 function updatePlayerViewScreen() {
+
     if (debug) {
         if (typeof debugWindow !== "undefined" && debugWindow !== null) {
-            $('section.debug p', debugWindow.document).html('');
+            //$('section.debug p', debugWindow.document).html('');
+            var t = debugWindow.document.getElementsByTagName('section');
+            for (let i = 0; i < t.length; i++){
+              t[i].getElementsByTagName('p')[0].innerHTML = '';
+            }
         }
     }
     //configCanvas();
@@ -104,17 +116,17 @@ function setViewportScale(sp) {
             if(isMobile) {
                     zoom = 2;
                     if (typeof sp !== "undefined" && sp) {
-                            scaleReal = $(window).width() / (320 / zoom);
+                            scaleReal = window.innerWidth / (320 / zoom);
                     } else {
-                            scaleReal = $(window).height() / (200 / zoom);
+                            scaleReal = window.innerHeight / (200 / zoom);
                     }
             }
             scale = Math.floor(scaleReal);
             scaleReal = scaleReal / scale / zoom;
 
         }
-    $('html').css('zoom', scaleReal);
-    $('html').css('-moz-transform', 'scale(' + scaleReal + ')');
+    document.body.style.zoom = scaleReal;
+    //$('html').css('-moz-transform', 'scale(' + scaleReal + ')');
     if (typeof player !== "undefined") {
         for (var p in player) {
             player[p].PortalX = (player[p].ScreenX + 96) * scale;
@@ -142,7 +154,7 @@ function setViewportScale(sp) {
 function myDIx(canvas, img, PosAry) {
 
     if (debug && frontBuffer){
-        canvas = document.getElementById("game-port").getContext("2d")
+        canvas = ctx; // DrS: ?? I do not know why
     }
 
     if (typeof canvas.drawImage !== "undefined" && typeof img !== "undefined" && img !== null) {
@@ -178,8 +190,8 @@ function pauseGame(ps, colourTo) {
             var colourTo = '#000000';
         }
     }
-    $('html').css('background', colourTo);
-    $('body').css('background', colourTo);
+
+    document.body.style.background = colourTo;
     canvas.style.background = colourTo;
 
     if (ps) {
@@ -238,7 +250,8 @@ function gfxColourSubs(folder, type, item, sub) {
 //sub: define this to the number of color variations you wish to add for this type of object. Currently maximum of 8
 
 function gfxLoadImages(img, result) {
-    //console.log("LoadImage: " + folder + " " + type + " " + item + " " + sub);
+    // called from init.js (after loading easch IMG)
+    //console.log(img, result);
 
     var data = img.id.split('_');
     folder = data[0];
@@ -255,6 +268,7 @@ function gfxLoadImages(img, result) {
         var match = true;
     }
 
+    //console.log("LoadImage: " + folder + " " + type + " " + item + " " + sub);
     if (typeof type === 'string') {
         var id = '';
         if (typeof gfx[folder] === 'undefined') {
@@ -286,7 +300,7 @@ function gfxLoadImages(img, result) {
 }
 
 function gfxLoadImage(folder, type, item, sub) {
-    //console.log("LoadImage: " + folder + " " + type + " " + item + " " + sub);
+    //console.log("LoadImage: ", folder, type, item, sub);
     if (typeof type === 'string') {
         gfxLoaded.count++;
         var id = '';
@@ -304,31 +318,32 @@ function gfxLoadImage(folder, type, item, sub) {
         } else {
             id = type;
         }
-        $('body').append('<img id="' + id + '" src="data/' + GAME_ID[GAME_BLOODWYCH] + '/images/' + folder + '/' + id + '.png" class="gfx"/>');
+
+        document.body.innerHTML += '<img id="' + id + '" src="data/' + GAME_ID[GAME_BLOODWYCH] + '/images/' + folder + '/' + id + '.png" class="gfx"/>';
         if (typeof sub === 'number' && sub != null) {
             if (item != '') {
                 gfx[folder][type][item][0] = document.getElementById(id);
-                $(gfx[folder][type][item][0]).load(function() {
+                gfx[folder][type][item][0].onload = function() {
                     gfxColourSubs(folder, type, item, sub);
                     checkAllGfxLoaded();
-                });
+                };
             } else {
                 gfx[folder][type][0] = document.getElementById(id);
-                $(gfx[folder][type][0]).load(function() {
+                gfx[folder][type][0].onload = function() {
                     gfxColourSubs(folder, type, '', sub);
                     checkAllGfxLoaded();
-                });
+                };
             }
         } else if (typeof item === 'string' && item != '') {
             gfx[folder][type][item] = document.getElementById(id);
-            $(gfx[folder][type][item]).load(function() {
+            gfx[folder][type][item].onload = function() {
                 checkAllGfxLoaded();
-            });
+            };
         } else {
             gfx[folder][type] = document.getElementById(id);
-            $(gfx[folder][type]).load(function() {
+            gfx[folder][type].onload = function() {
                 checkAllGfxLoaded();
-            });
+            };
         }
     }
 }
@@ -371,46 +386,84 @@ function debugTextPrint(p) {
             }
         }
         if (typeof debugWindow !== "undefined" && debugWindow !== null) {
-            if ($('body .debug-input', debugWindow.document).length === 0) {
-                $('body', debugWindow.document).append('<div class="debug-input">');
-                $('body .debug-input', debugWindow.document).append('<div><strong>Coordinates</strong></div>');
-                $('body .debug-input', debugWindow.document).append('<label for="coord-t">T: </label><input type="text" id="coord-t" value="' + towerThis + '">');
-                $('body .debug-input', debugWindow.document).append('<label for="coord-f">F: </label><input type="text" id="coord-f" value="' + player[0].floor + '">');
-                $('body .debug-input', debugWindow.document).append('<label for="coord-x">X: </label><input type="text" id="coord-x" value="' + player[0].x + '">');
-                $('body .debug-input', debugWindow.document).append('<label for="coord-y">Y: </label><input type="text" id="coord-y" value="' + player[0].y + '">');
-                $('body .debug-input', debugWindow.document).append('<input type="button" id="coord-submit" value="update">');
+          try {
+            var t = debugWindow.document.body.getElementsByClassName('debug-input');
+            if (t.length === 0) {
+              console.log("adding debug inputs");
+              t = debugWindow.document.body;
+              var tt = [];
+              tt.push('<div class="debug-input">');
+              tt.push('<div><strong>Coordinates</strong></div>');
+              tt.push('<label for="coord-t">T: </label><input type="text" id="coord-t" value="' + towerThis + '">');
+              tt.push('<label for="coord-f">F: </label><input type="text" id="coord-f" value="' + player[0].floor + '">');
+              tt.push('<label for="coord-x">X: </label><input type="text" id="coord-x" value="' + player[0].x + '">');
+              tt.push('<label for="coord-y">Y: </label><input type="text" id="coord-y" value="' + player[0].y + '">');
+              tt.push('<input type="button" id="coord-submit" value="update">');
+              tt.push('</div>');
+              // add before
+              t.innerHTML = tt.join("") + t.innerHTML;
+              // attach submit coords event
+              setTimeout(function(){
+                debugWindow.document.getElementById('coord-submit').onclick = function() {
+                  var tower = parseInt(debugWindow.document.getElementById('coord-t').value);
+                  var floor = parseInt(debugWindow.document.getElementById('coord-f').value);
+                  var x = parseInt(debugWindow.document.getElementById('coord-x').value);
+                  var y = parseInt(debugWindow.document.getElementById('coord-y').value);
+                  if (towerThis !== tower) {
+                    switchTower(tower);
+                  }
+                  player[0].setPlayerPosition(floor, x, y);
+                }
+              },1000);
+
             }
-            var tower = parseInt($('body .debug-input #coord-t', debugWindow.document).val());
-            var floor = parseInt($('body .debug-input #coord-f', debugWindow.document).val());
-            var x = parseInt($('body .debug-input #coord-x', debugWindow.document).val());
-            var y = parseInt($('body .debug-input #coord-y', debugWindow.document).val());
-            if (!$('body .debug-input #coord-t', debugWindow.document).is(':focus') && !$('body .debug-input #coord-f', debugWindow.document).is(':focus') && !$('body .debug-input #coord-x', debugWindow.document).is(':focus') && !$('body .debug-input #coord-y', debugWindow.document).is(':focus') && !$('body .debug-input #coord-submit', debugWindow.document).is(':focus')) {
+            var tower_E = debugWindow.document.getElementById('coord-t');
+            var floor_E = debugWindow.document.getElementById('coord-f');
+            var x_E = debugWindow.document.getElementById('coord-x');
+            var y_E = debugWindow.document.getElementById('coord-y');
+            var submit_E = debugWindow.document.getElementById('coord-submit');
+            var tower = parseInt(tower_E.value);
+            var floor = parseInt(floor_E.value);
+            var x = parseInt(x_E.value);
+            var y = parseInt(y_E.value);
+            var act = debugWindow.document.activeElement;
+            // test if none of the inputs is focused
+            if (!(act == tower_E || act === floor_E || act === x_E || act === y_E || act === submit_E)) {
+              console.log("update coords");
+              // only update when none of these is focused
                 if (tower !== towerThis) {
-                    $('body .debug-input #coord-t', debugWindow.document).val(towerThis);
+                    tower_E.value = towerThis;
                 }
                 if (floor !== player[0].floor) {
-                    $('body .debug-input #coord-f', debugWindow.document).val(player[0].floor);
+                    floor_E.value = player[0].floor;
                 }
                 if (x !== player[0].x) {
-                    $('body .debug-input #coord-x', debugWindow.document).val(player[0].x);
+                    x_E.value = player[0].x;
                 }
                 if (y !== player[0].y) {
-                    $('body .debug-input #coord-y', debugWindow.document).val(player[0].y);
+                    y_E.value = player[0].y;
                 }
             }
+
+          } catch(e){
+            console.error(e);
+          }
         }
     }
 }
 
 function debugGetInputCoords() {
     if (typeof debugWindow !== "undefined" && debugWindow !== null) {
-        if ($('body .debug-input', debugWindow.document).length > 0) {}
+        // does nothing if ($('body .debug-input', debugWindow.document).length > 0) {}
     }
 }
 
 function debugText(p, txt) {
     if (typeof debugWindow !== "undefined" && debugWindow !== null) {
-        $('section.debug.player' + p.id + ' p', debugWindow.document).append('P' + (p.id + 1) + ': ' + txt + '<br/>');
+        //$('section.debug.player' + p.id + ' p', debugWindow.document).append('P' + (p.id + 1) + ': ' + txt + '<br/>');
+        try {
+          debugWindow.document.getElementsByTagName('section')[p.id].getElementsByTagName('p')[0].innerHTML += 'P' + (p.id + 1) + ': ' + txt + '<br/>';
+        } catch(e) {}
     }
 }
 
@@ -433,62 +486,65 @@ function godMode() {
 
 }
 
-$(function() {
-    $(document).focusin(function(e) {
-        var t = $(e.target);
+(function() {
+    document.body.onfocus = function(e) {
         if (gameStarted && paused && pausedByBrowser) {
             pauseGame(false);
         }
-    });
-    $(document).focusout(function(e) {
-        var t = $(e.target);
+    };
+    document.body.onblur = function(e) {
         if (gameStarted && !paused) {
             pauseGame(true);
             pausedByBrowser = true;
         }
-    });
-    $(window).on('beforeunload', function() {
+    };
+    window.onbeforeunload = function() {
         if(gameStarted) {
             pauseGame(false);
             saveGame(99, 'autosave');
         }
-    });
+    };
+    /*
     if (typeof debugWindow !== "undefined" && debugWindow !== null) {
-        $('body', debugWindow.document).on('click', '.debug-input #coord-submit', function() {
-            var tower = parseInt($('body .debug-input #coord-t', debugWindow.document).val());
-            var floor = parseInt($('body .debug-input #coord-f', debugWindow.document).val());
-            var x = parseInt($('body .debug-input #coord-x', debugWindow.document).val());
-            var y = parseInt($('body .debug-input #coord-y', debugWindow.document).val());
+        //$('body', debugWindow.document).on('click', '.debug-input #coord-submit', function() {
+        console.log("attach coords submit event");
+        debugWindow.document.body.getElementById('coord-submit').onclick = function() {
+          console.log("submit coords");
+            var tower = parseInt(debugWindow.document.getElementById('coord-t').value);
+            var floor = parseInt(debugWindow.document.getElementById('coord-f').value);
+            var x = parseInt(debugWindow.document.getElementById('coord-x').value);
+            var y = parseInt(debugWindow.document.getElementById('coord-y').value);
             if (towerThis !== tower) {
                 switchTower(tower);
             }
             player[0].setPlayerPosition(floor, x, y);
-        });
+        };
     }
+    */
 
-    $(document).on('keyup', 'body', function(e) {
-        var t = $(e.target);
-        if (t.is('input.save-game')) {
-            var p = t.data('player-id');
+    document.body.onkeyup = function(e) {
+        var t = e.target;
+        if (t.id === 'save-game') {
+            var p = saveGames.playerID;
             if (typeof p !== 'undefined') {
-                var slot = t.data('slot-id');
-                var name = t.val().substring(0, 12).toUpperCase();
+                var slot = saveGames.slotID;
+                var name = t.value.substring(0, 12).toUpperCase();
                 var code = e.keyCode || e.which;
                 if (code === 13) {
-                    t.trigger('focusout');
+                    t.blur();
                     if (name !== '') {
                         pauseGame(false);
                         saveGame(slot, name);
                         redrawUI(p);
                     }
                 } else if (code === 27) {
-                    t.trigger('focusout');
+                    t.blur();
                 } else {
                     var pp = player[p].Portal;
                     pp.fillStyle = 'rgb(' + colourData['GREY_DARKEST'][0] + ', ' + colourData['GREY_DARKEST'][1] + ', ' + colourData['GREY_DARKEST'][2] + ')';
                     pp.fillRect(4 * scale, (slot * 8 + 5) * scale, 120 * scale, 9 * scale);
                     writeFontImage((slot + 1) + '.' + name, 8, slot * 8 + 6, colourData['WHITE'], FONT_ALIGNMENT_LEFT, pp);
-                    var crt = t.caret();
+                    var crt = 1;// DrS: whats that? border size? t.caret();
                     var off = scale * 0.5;
                     pp.strokeStyle = 'rgb(' + colourData['GREY_LIGHT'][0] + ', ' + colourData['GREY_LIGHT'][1] + ', ' + colourData['GREY_LIGHT'][2] + ')';
                     pp.beginPath();
@@ -499,11 +555,13 @@ $(function() {
                 }
             }
         }
-    });
-    $('body').on('tap', 'canvas', function(e) {
+    };
+    //$('body').on('tap', 'canvas', function(e) {
+    canvas.onclick = function(e) {
+    // DrS: Also needed for the touch event
         if (e.pageX) {
-            var offX = $(this).offset().left;
-            var offY = $(this).offset().top;
+            var offX = canvas.offsetLeft;
+            var offY = canvas.offsetTop;
             var x = Math.floor((e.pageX - offX) / (scale * scaleReal));
             var y = Math.floor((e.pageY - offY) / (scale * scaleReal));
             for (var p1 in player) {
@@ -511,16 +569,18 @@ $(function() {
                 if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {
                     for (var slot = 0; slot < 8; slot++) {
                         if (uiClickInArea(x, y, slot, p, gameStateSelectGrid)) {
+                            //console.log("Slot", slot);
                             p.message("SAVE GAME - CHANGE NAME OR ENTER TO SAVE", colourData['GREEN'], false, 0);
-                            var inp = $('input.save-game');
-                            inp.trigger('focusout');
-                            inp.val(getGameName(slot));
-                            inp.data('player-id', p.id);
-                            inp.data('slot-id', slot);
-                            inp.show();
-                            inp.trigger('keyup');
-                            inp.focus().select().click();
-                            inp.trigger('tap');
+                            var inp = document.getElementById('save-game');
+                            inp.blur();
+                            inp.value = getGameName(slot);
+                            saveGames.playerID = p.id;
+                            saveGames.slotID =  slot;
+                            inp.style.display = 'block';
+                            //inp.keyup();
+                            inp.focus();
+                            inp.click();
+                            //inp.tap();
                             return false;
                         }
                     }
@@ -549,17 +609,18 @@ $(function() {
                 }
             }
         }
-    });
+    };
 
     //$('input.save-game').click(function() {
     //});
-    $('input.save-game').focusout(function() {
-        $(this).hide();
-        var p = $(this).data('player-id');
+    //$('input.save-game').focusout(function() {
+    document.getElementById('save-game').onblur = function(e) {
+      //console.log("blur");
+        e.target.style.display = 'none'; //$(this).hide();
+        var p = saveGames.playerID;
         if (typeof p !== 'undefined' && player[p].uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {
             createStateGrid(player[p], "SAVE");
         }
         canvas.focus();
-    });
-});
-
+    };
+})();

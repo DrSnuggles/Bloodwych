@@ -1,5 +1,5 @@
 function startScreen() {
-    $('canvas').attr('data-game-status', 'menu');
+    canvas.setAttribute('data-game-status', 'menu');
     canvas.addEventListener('keydown', doKeyDown, true);
     //checkClickEvents();
     canvas.focus();
@@ -21,7 +21,7 @@ function startScreen() {
 }
 
 function preStartScreen() {
-    $('canvas').attr('data-game-status', 'menu');
+    canvas.setAttribute('data-game-status', 'menu');
     canvas.addEventListener('keydown', doKeyDown, true);
     checkClickEvents();
     canvas.focus();
@@ -58,7 +58,7 @@ function loadingScreen(objProgress){
 		writeFontImage("PROCESSING DATA...", 120, 80, colourData['GREEN'], FONT_ALIGNMENT_LEFT);
 		writeFontImage("   FILE: " + objProgress.src, 34, 100, colourData['GREEN'], FONT_ALIGNMENT_LEFT);
 	}
-    
+
 	//writeFontImage(" PROGRESS: " + objProgress.progress, 34, 140, colourData['GREEN'], FONT_ALIGNMENT_LEFT);
 
     writeFontImage("MIRRORSOFT 1989", 114, 178, colourData['GREY_DARK'], FONT_ALIGNMENT_LEFT);

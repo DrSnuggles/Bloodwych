@@ -299,7 +299,8 @@ Champion.prototype.hasRangedWeapon = function() {
         var id = getObjectByKeys(it, 'onAttack', 'shootId');
         if(typeof typ !== "undefined" || typeof id !== "undefined") {
             var it2 = itemJson[hand[1 - s].id];//this.pocket[hand[1 - s]];
-            if((typeof id !== "undefined" && $.inArray(it2.id, id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
+            //if((typeof id !== "undefined" && $.inArray(it2.id, id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
+            if((typeof id !== "undefined" && id.indexOf(it2.id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
                 var sh = getObjectByKeys(it2, 'onShoot');
                 if(typeof sh !== "undefined") {
                     return true;
@@ -339,7 +340,8 @@ Champion.prototype.itemAllowedOnSlot = function(it, s) {
                 return x.getVar();
             });
         }
-        if((s !== POCKET_ARMOUR && s !== POCKET_SHIELD && s !== POCKET_GLOVES) || (typeof as !== "undefined" && as.getVar() === s && (typeof pf === "undefined" || $.inArray(this.prof, pf) > -1))) {
+        //if((s !== POCKET_ARMOUR && s !== POCKET_SHIELD && s !== POCKET_GLOVES) || (typeof as !== "undefined" && as.getVar() === s && (typeof pf === "undefined" || $.inArray(this.prof, pf) > -1))) {
+        if((s !== POCKET_ARMOUR && s !== POCKET_SHIELD && s !== POCKET_GLOVES) || (typeof as !== "undefined" && as.getVar() === s && (typeof pf === "undefined" || pf.indexOf(this.prof) > -1))) {
             return true;
         }
         return false;
@@ -361,7 +363,8 @@ Champion.prototype.useItem = function(it, ac, param) {
         var hand = [POCKET_LEFT_HAND, POCKET_RIGHT_HAND];
         for(var h = 0; h < hand.length; h++) {
             var it2 = this.pocket[hand[h]];
-            if((typeof id !== "undefined" && $.inArray(itemJson[it2.id].id, id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
+            //if((typeof id !== "undefined" && $.inArray(itemJson[it2.id].id, id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
+            if((typeof id !== "undefined" && id.indexOf(itemJson[it2.id].id) > -1) || (typeof typ !== "undefined" && it2.type === typ)) {
                 var sh = getObjectByKeys(itemJson[it2.id], 'onShoot');
                 if(typeof sh !== "undefined") {
                     var pw2 = getObjectByKeys(use, 'damage');
@@ -445,7 +448,7 @@ Champion.prototype.useItem = function(it, ac, param) {
         var icl = getObjectByKeys(use, 'changeSpell', 'class');
         if((typeof iid !== "undefined" && iid.getVar() === sp.id) || (typeof icl !== "undefined" && icl.getVar() === sp.colour)) {
             var imc = getObjectByKeys(use, 'changeSpell', 'manaCostFactor');
-            var irc = getObjectByKeys(use, 'addQuantity');
+            var irc = getObjectByKeys(use, 'changeSpell', 'addQuantity');
             if(it.quantity > 1 || typeof irc === "undefined" || irc >= 0) {
                 var ip = getObjectByKeys(use, 'changeSpell', 'damage');
                 var ipf = getObjectByKeys(use, 'changeSpell', 'damageFactor');
@@ -495,8 +498,8 @@ Champion.prototype.useItem = function(it, ac, param) {
         suc = true;
     }
 
-    //Change quantity
-    ac1 = getObjectByKeys(itemJson[it.id], ac, 'addQuantity');
+    //Change the stack
+    ac1 = getObjectByKeys(itemJson[it.id], ac, 'changeStack');
     if(typeof ac1 !=="undefined") {
         if(it.quantity + ac1 >= 0 && it.quantity + ac1 < 100) {
             it.setQuantity(it.quantity + ac1);
@@ -507,7 +510,15 @@ Champion.prototype.useItem = function(it, ac, param) {
     //Change item to another item
     ac1 = getObjectByKeys(itemJson[it.id], ac, 'changeToItem');
     if(typeof ac1 !=="undefined") {
-        it.setPocketItem(ac1.getVar());
+        //it.setPocketItem(ac1.getVar());
+        var tid = -1;
+        for (let i = 0; i < itemJson.length; i++) {
+          if (itemJson[i].id == ac1) {
+            tid = i;
+            break;
+          }
+        }
+        if (tid > -1) it.setPocketItem(tid);
         suc = true;
     }
 
@@ -620,10 +631,10 @@ Champion.prototype.restoreStats = function() {
             var vi = 1.0;
             var sp = 1.0;
             for(var i = 0; i < it.length; i++) { //e.g. heal wand
-                if(typeof getObjectByKeys(itemJson[it[i].id], 'onEquip') !== "undefined") {
-                    var fhp = getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreHPFactor');
-                    var fvi = getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreVitFactor');
-                    var fsp = getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreSPFactor');
+                if(typeof getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreStat') !== "undefined") {
+                    var fhp = getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreStat', 'addHPFactor');
+                    var fvi = getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreStat', 'addVitFactor');
+                    var fsp = getObjectByKeys(itemJson[it[i].id], 'onEquip', 'restoreStat', 'addSPFactor');
                     if(typeof fhp !== "undefined") {
                         hp *= fhp;
                     }

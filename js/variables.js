@@ -11,7 +11,6 @@ if(isMobile) {
 }
 
 //Preloader stuff
-var preload = new createjs.LoadQueue(false);
 var defaultManifest;
 
 //Declare Arrays for the Graphics
@@ -77,7 +76,7 @@ var GAME_BLOODWYCH = 0,
 var GAME_ID = ['BW', 'EXT', 'BOS', 'CUSTOM'];
 
 //sounds
-var soundEnabled = false;
+var soundEnabled = true;
 
 
 //Flags for determining whether some asycnhronous file calls were succesfully loaded (see fileloader.js "getFileData")

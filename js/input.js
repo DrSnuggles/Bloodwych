@@ -135,7 +135,7 @@ function doKeyDown(e) {
                     case KEY_3:
                         player[0].alterObject(1);
                         break;
-                        case KEY_4:
+                    case KEY_4:
                         player[0].alterObject(0, 0, -1);
                         break;
                     case KEY_R:
@@ -167,15 +167,15 @@ function doKeyDown(e) {
                     break;
             }
         }
-    } else { //Start menu screen
+    } else if (typeof gameType !== 'undefined') { //Start menu screen
         switch (e.keyCode) {
             case KEY_1:
-                $('canvas').attr('data-game-status', 'menu-champions');
+                canvas.setAttribute('data-game-status', 'menu-champions');
                 players = 1;
                 drawQuickStartUI(1);
                 break
             case KEY_2:
-                $('canvas').attr('data-game-status', 'menu-champions');
+                canvas.setAttribute('data-game-status', 'menu-champions');
                 players = 2;
                 drawQuickStartUI(2);
                 break
@@ -195,16 +195,39 @@ function doKeyDown(e) {
                 startGame(false, true, null, null, true);
                 break;
         }
+    } else { // PreStart screen
+      switch (e.keyCode) {
+          case KEY_1: // BW
+              gameType = GAME_BLOODWYCH;
+              loadGFXData(GAME_ID[GAME_BLOODWYCH]);
+              break
+          case KEY_2: // EXT
+              gameType = GAME_EXTENDED_LEVELS;
+              loadGFXData(GAME_ID[GAME_BLOODWYCH]);
+              break
+          case KEY_3: // BOS
+              gameType = GAME_BOOK_OF_SKULLS;
+              loadGFXData(GAME_ID[GAME_BLOODWYCH]);
+              break
+          case KEY_4: // Custom Data Set
+              gameType = CUSTOM;
+              loadGFXData(GAME_ID[GAME_BLOODWYCH]);
+              startMenu = false;
+              break;
+          case KEY_5: // Map viewer
+
+              break;
+      }
     }
 
 }
 
 function checkClickEvents() {
-    $(document).on('tap', 'html', function(e) {
-        var t = $(this).find('canvas');
+    //$(document).on('tap', 'html', function(e) {
+    document.onclick = function(e) {
         var x = (e.pageX - (canvas.offsetLeft * scaleReal)) / (scale * scaleReal);
         var y = (e.pageY - (canvas.offsetTop * scaleReal)) / (scale * scaleReal);
-        if (t.attr('data-game-status') === 'started') {
+        if (canvas.getAttribute('data-game-status') === 'started') {
             //if (paused) {
             //	pauseGame(false);
             //}
@@ -216,9 +239,9 @@ function checkClickEvents() {
             if (p > 0) {
                 redrawUI(p - 1);
             }
-        } else if (t.attr('data-game-status') === 'menu') {
+        } else if (canvas.getAttribute('data-game-status') === 'menu') {
             processCanvasInputMenu(x, y);
-        } else if (t.attr('data-game-status') === 'menu-champions') {
+        } else if (canvas.getAttribute('data-game-status') === 'menu-champions') {
             uiChampSelectArea(x, y, currentPlayer);
 
             if (championSelect[currentPlayer].mode === UI_CHARACTER_SELECT_POCKET) {
@@ -238,7 +261,7 @@ function checkClickEvents() {
             }
 
         }
-    });
+    };
 }
 
 function processCanvasInput(pid, x, y) {
@@ -560,19 +583,19 @@ function processCanvasInputMenu(x, y) {
     if (startMenu){
         if (uiClickInArea(x, y, UI_CLICK_START_ONE_PLAYER)) { //BLOODWYCH
             gameType = GAME_BLOODWYCH;
-            loadGFXData();
+            loadGFXData(GAME_ID[GAME_BLOODWYCH]);
             startMenu = false;
         } else if (uiClickInArea(x, y, UI_CLICK_START_TWO_PLAYER)) { //EXTENDED LEVELS
             gameType = GAME_EXTENDED_LEVELS;
-            loadGFXData();
+            loadGFXData(GAME_ID[GAME_BLOODWYCH]);
             startMenu = false;
         } else if (uiClickInArea(x, y, UI_CLICK_START_QUICK_ONE_PLAYER)) { //BOOK OF SKULLS
             gameType = GAME_BOOK_OF_SKULLS;
-            loadGFXData();
+            loadGFXData(GAME_ID[GAME_BLOODWYCH]);
             startMenu = false;
         } else if (uiClickInArea(x, y, UI_CLICK_START_QUICK_TWO_PLAYER)) { //CUSTOM DATA
             gameType = CUSTOM;
-            loadGFXData();
+            loadGFXData(GAME_ID[GAME_BLOODWYCH]);
             startMenu = false;
         } else if (uiClickInArea(x, y, UI_CLICK_START_RESUME_GAME)) { //MAP VIEWER
 
@@ -580,11 +603,11 @@ function processCanvasInputMenu(x, y) {
     }else{
 
         if (uiClickInArea(x, y, UI_CLICK_START_ONE_PLAYER)) {
-            $('canvas').attr('data-game-status', 'menu-champions');
+            canvas.setAttribute('data-game-status', 'menu-champions');
             players = 1;
             drawQuickStartUI(0);
         } else if (uiClickInArea(x, y, UI_CLICK_START_TWO_PLAYER)) {
-            $('canvas').attr('data-game-status', 'menu-champions');
+            canvas.setAttribute('data-game-status', 'menu-champions');
             players = 2;
             drawQuickStartUI(0);
         } else if (uiClickInArea(x, y, UI_CLICK_START_QUICK_ONE_PLAYER)) {
@@ -614,7 +637,7 @@ function mouseXY(e) {
         var currentColour = cursorType;
         if (typeof player[0] !== 'undefined') {
             if (typeof player[1] !== 'undefined') {
-                if ($('canvas').attr('data-game-status') === 'menu-champions') {
+                if (canvas.getAttribute('data-game-status') === 'menu-champions') {
                 if (currentPlayer === 0) {
                     cursorType = cursorBlue;
                     if (currentColour !== cursorType) {
@@ -1510,3 +1533,22 @@ function createSelectGrid(myObject, myX, myY, myWidth, myHeight, cid) {
         champID: cid
     });
 }
+
+/* DrSnuggles event listener for RMB
+  Idea: get rid of annoying browser context menu while adding a nice feature
+  Function: close all opened menus
+*/
+addEventListener("contextmenu", function(e) {
+  e.preventDefault();// do not show std. browser context menu
+
+  // for all players
+  for (let p in player) {
+    player[p].uiLeftPanel.mode = 0;
+    player[p].uiRightPanel.mode = 0;
+    player[p].communication.mode = 0;
+    player[p].redrawViewPort = true;
+    player[p].redrawLeftRightUiFlag = UI_REDRAW_ALL;
+    redrawPlayerUiFlag = 3;
+    drawUI(player[p]);
+  }
+}, false);
