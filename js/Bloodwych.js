@@ -40,6 +40,7 @@ var saveGames = {
 
     // ToDo: too large, throws warning, maybe move into rAF canvas renderer
     canvas.style.cursor = "url('data/" + GAME_ID[GAME_BLOODWYCH] + "/images/misc/cursor0.png'),auto";
+    scrLoader.style.cursor = canvas.style.cursor;
 
     document.addEventListener("deviceready", onDeviceReady, false);
     // PhoneGap is loaded and it is now safe to make calls PhoneGap methods
