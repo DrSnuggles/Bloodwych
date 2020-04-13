@@ -461,6 +461,7 @@ function clone(o) {
 // will move and/or structure later
 var DrS = {
 	useZIP: true,
+	startTime: new Date(),
 };
 DrS.get = function(url, type, cb) {
 	if (DrS.useZIP) {
@@ -586,9 +587,13 @@ DrS.download = function(content, fileName, mimeType) {
 	// i preload std BW
 	DrS.loadZIP('BW', function(){
 		// fade out loading screen
-		scrLoader.classList.add("fadeOut");
+		var toWait = 2000 - (new Date() - DrS.startTime);
+		toWait = Math.max(toWait, 0);
 		setTimeout(function(){
-			document.body.removeChild(scrLoader);
-		},1000);
+			scrLoader.classList.add("fadeOut");
+			setTimeout(function(){
+				document.body.removeChild(scrLoader);
+			},1000);
+		}, toWait);
 	});
 })();
