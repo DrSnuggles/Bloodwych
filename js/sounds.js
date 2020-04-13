@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+/*
 function initSounds(soundJson, path){
 
     path = path.substring(0, path.indexOf('json')) + "sounds/";
@@ -13,7 +13,7 @@ function initSounds(soundJson, path){
     }
 
 }
-
+*/
 
 function playSound(soundName){
     if(soundEnabled) {

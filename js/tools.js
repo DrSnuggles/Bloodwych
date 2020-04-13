@@ -501,6 +501,17 @@ DrS.get = function(url, type, cb) {
 				};
 			}
 		}
+		if (type === 'aud') {
+			var t = DrS.u8ToRaw(tmp); // other method (see above) blows stack
+			t = btoa(t); // base64
+			tmp = new Audio();
+			tmp.src = 'data:audio/wav;base64,'+ t;
+			if (cb) {
+				tmp.onload = function(){
+					cb( tmp );
+				};
+			}
+		}
 
 		// callback or return
 		if (cb) {
@@ -541,6 +552,13 @@ DrS.loadZIP = function(zip, cb) {
 DrS.u8ToStr = function(arr) {
 	return new TextDecoder('utf-8').decode(arr);
 };
+DrS.u8ToRaw = function(arr) {
+  var ret = [];
+  for (var i = 0; i < arr.length; i++) {
+    ret.push( String.fromCharCode( arr[i] ) );
+  }
+  return ret.join("");
+}
 DrS.download = function(content, fileName, mimeType) {
 	var a = document.createElement('a');
 	mimeType = mimeType || 'application/octet-stream';

@@ -277,7 +277,15 @@ function loadDefaultJSONFiles(path) {
   }
   tmp = DrS.get('data/'+path+'/json/sounds.json', 'json');
   if (tmp) {
-    initSounds(tmp.sounds, 'data/'+path+'/json');
+    //initSounds(tmp.sounds, 'data/'+path+'/json');
+
+    for (var s in tmp.sounds){
+      var aud = DrS.get('data/'+path+'/sounds/'+tmp.sounds[s].filename, 'aud');
+      if (aud) {
+        audioFiles[tmp.sounds[s].id] = aud;
+      }
+    }
+
   }
   tmp = DrS.get('data/'+path+'/json/spells.json', 'json');
   if (tmp) {
