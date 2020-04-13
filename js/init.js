@@ -16,6 +16,7 @@ function loadDefaultGfx(event) {
   // second, called by graphics.json eval ... not beautiful
   defaultManifest = event;
   if(gameType !== GAME_BLOODWYCH) {
+    loadingScreen({type: "fileprogress", item:{src: GAME_ID[gameType]+'.zip'} });
     DrS.loadZIP(GAME_ID[gameType], function(){
       loadGFXData(GAME_ID[gameType]);
     });
@@ -51,6 +52,7 @@ function loadCustomGfx(event) {
         console.info("had to add path manually", src);
         src = "data/"+ GAME_ID[gameType] + "/"+ src;
       }
+      loadingScreen({type: "fileprogress", item:{src: src} });
       DrS.get(src, 'img', function(res){
         //res = document.body.appendChild(res);
         //res.id = defaultManifest.manifest[key].id;
@@ -58,7 +60,8 @@ function loadCustomGfx(event) {
         if (act < len) {
           manLoad();
         } else {
-
+          // this here is later. ToDo: make this more clear visible
+          handleComplete();
         }
       });
     }
@@ -75,6 +78,7 @@ function loadTowerData(event) {
   var len = event.manifest.length;
   var act = 0;
     function manLoad() {
+      loadingScreen({type: "fileprogress", item:{src: event.manifest[act].src} });
       DrS.get(event.path + event.manifest[act].src, 'bin', function(res){
         //res = document.body.appendChild(res);
         //res.id = defaultManifest.manifest[key].id;
@@ -87,7 +91,7 @@ function loadTowerData(event) {
         if (act < len) {
           manLoad();
         } else {
-          handleComplete();
+
         }
       });
     }

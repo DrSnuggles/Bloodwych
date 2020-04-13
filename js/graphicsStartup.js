@@ -44,7 +44,7 @@ function preStartScreen() {
 function loadingScreen(objProgress){
 
 	//$('canvas').attr('data-game-status', 'menu');
-    canvas.addEventListener('keydown', doKeyDown, true);
+    //canvas.addEventListener('keydown', doKeyDown, true);
     canvas.focus();
 
     configCanvas();

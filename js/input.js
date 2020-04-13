@@ -1,4 +1,5 @@
 function doKeyDown(e) {
+  if (typeof scrLoader !== 'undefined') return false; // ToDo: find too early event adds
     if (gameStarted) {
         if (!paused) {
             if (typeof player[1] !== 'undefined' && !player[1].frozen) {
@@ -578,7 +579,7 @@ function processCanvasInput(pid, x, y) {
 }
 
 function processCanvasInputMenu(x, y) {
-
+  if (typeof scrLoader !== 'undefined') return false; // ToDo: find too early event adds
     //var t = $(this).find('canvas');
     if (startMenu){
         if (uiClickInArea(x, y, UI_CLICK_START_ONE_PLAYER)) { //BLOODWYCH
