@@ -38,6 +38,13 @@ function calculateAttack(att, def, tof) {
 			if (att instanceof Player || (att instanceof Champion && att.recruitment.playerId > -1)) {
 				var att2 = att;
 				if (att instanceof Champion) {
+					// DrS: Added champions with opened spell book do not auto cast spells
+					if (att.id === player[att.recruitment.playerId].champion[ player[att.recruitment.playerId].championLeader ]
+							&& player[att.recruitment.playerId].uiRightPanel.mode == 1)
+					{
+						continue;
+					}
+
 					att2 = player[att.recruitment.playerId];
 				}
 				from = att2.getChampion(a);
