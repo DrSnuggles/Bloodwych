@@ -87,17 +87,18 @@ function loadGameData(dat) {
 		}
                 for(var p in player){
                     for(var c in player[p].champion){
-                        var id = champion[player[p].champion[c]].id;
-                            initMonsterGfxNew(champion[id].getMonster());
-                        }
+											if (champion[player[p].champion[c]]) { // else throws error for champion -1
+												var id = champion[player[p].champion[c]].id;
+												initMonsterGfxNew(champion[id].getMonster());
+											}
+										}
                 }
 		player[0].message(TEXT_GAME_LOADED, colourData['GREEN']);
 	}
 };
 
-function saveGame(g, name) {
-	var save = new gameState('savegame' + g);
-	save.gameData = {
+function getJSONGameData(name) {
+	return JSON.stringify( {
 		name: name,
 		version: VERSION,
 		tower: Object.assign({}, tower),
@@ -115,15 +116,20 @@ function saveGame(g, name) {
 			dungeonSpellTimer: dungeonSpellTimer,
 			dungeonSpellList: dungeonSpellList,
 			soundEnabled: soundEnabled
-//			activeSpellTimer: activeSpellTimer
+			//activeSpellTimer: activeSpellTimer
 		}
-	};
+	});
+}
+function saveGame(g, name) {
+	var save = new gameState('savegame' + g);
+	var content = getJSONGameData(name);
+	save.gameData = content;
 	// DrSnuggles: added fileSave because storage quota = 5MB but stores as UTF-16 internally
-	var content = JSON.stringify(save.gameData);
 	// download plain version
-	if (debug || g < 99) {
-		DrS.download(content, save.fileName+"_"+save.gameData.name, "application/json");
-	}
+	// disabled for now because if i want i have drag out now
+	//if (debug || g < 99) {
+		//DrS.download(save.gameData, save.fileName+"_"+save.gameData.name, "application/json");
+	//}
 
 	// ZIP it
 	content = new TextEncoder().encode(content); // now content is uint8array
@@ -192,7 +198,7 @@ addEventListener("keyup", function(e) {
 var dropArea = window;
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, preventDefaults, false);
+	dropArea.addEventListener(eventName, preventDefaults, false);
 });
 
 function preventDefaults (e) {
@@ -232,3 +238,14 @@ function TryUnZIP2JSON(t) {
 	ret = JSON.parse(t);
 	return ret;
 }
+
+/* Drag out handler by DrSnuggles
+	save JSON file with this method
+*/
+var dragArea = document.body;
+
+dragArea.draggable = true;
+dragArea.addEventListener('dragstart', function (e) {
+	// download plain version
+  e.dataTransfer.setData("DownloadURL", "text/plain:Bloodwych_DND.json:data:application/json," + encodeURIComponent(getJSONGameData("dnd")) );
+}, false);

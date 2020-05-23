@@ -94,6 +94,7 @@ Movement keys for player 2 are 7,8,9,4,5,6
 
 ## TaDa / History / Changelog
     - 23.05.2020 Fixed: removed auto cast while spell book is opened (thanks to karadoc for reporting)
+                 Added: Drop out to save state
     - 13.04.2020 change ingame loading behaviour, preload classic BW
                  fading behemoth loading screen
                  key inputs do now work on PreStart screen
