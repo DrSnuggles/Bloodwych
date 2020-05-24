@@ -25,7 +25,8 @@
 
   <div class="content">
     <div class="canvas-wrapper">
-      <canvas id="canvas" width="960" height="600" tabindex="1" data-game-status="loading"></canvas>
+      <canvas id="canvas" width="960" height="600" data-game-status="loading"></canvas>
+      <canvas id="canv2" width="960" height="600" tabindex="1"></canvas>
       <input type="text" class="save-game" id="save-game" maxlength="12" />
     </div>
   </div>
@@ -50,18 +51,20 @@
   <script src="js/projectiles.js"></script>
   <script src="js/player.js"></script>
   <script src="js/graphics.js"></script>
+  <script src="js/tools.js"></script>
   <script src="js/input.js"></script>
   <script src="js/game.js"></script>
   <script src="js/renderer.js"></script>
   <script src="js/main.js"></script>
-  <script src="js/tools.js"></script>
   <script src="js/init.js"></script>
   <script src="js/Bloodwych.js"></script>
   <script src="js/sounds.js"></script>
 
   <script>
   var ctx = canvas.getContext("2d");
-  canvas.addEventListener("mousemove", mouseXY, false);
+  canv2.addEventListener("mousemove", mouseXY, false);
+  var ctx2 = canv2.getContext("2d");
+
   document.ontouchstart = function(e) {
     e.preventDefault();
   };

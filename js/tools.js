@@ -463,6 +463,7 @@ var DrS = {
 	useZIP: true,
 	startTime: new Date(),
 };
+DrS.mouse = [{x:0,y:0}, {x:0,y:0}]; // player0 and player1
 DrS.get = function(url, type, cb) {
 	if (DrS.useZIP) {
 		var tmp;

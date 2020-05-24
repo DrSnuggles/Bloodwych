@@ -54,6 +54,12 @@ canvas {
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: optimize-contrast;
 	-ms-interpolation-mode: nearest-neighbor;
+	cursor: none;
+}
+#canv2 {
+	position: absolute;
+	background-color: transparent;
+	background-image: none;
 }
 /*
 canvas[data-game-status="loading"] {

@@ -35,12 +35,78 @@ var saveGames = {
   slotID: 0,
 };
 
+function addOwnMouse() {
+  // check if we have analog gamepad
+
+  // add 2nd canvas (only for mouse cursors)
+  /*
+  var canv2 = document.createElement("canvas");
+  canv2.id = "canv2";
+  canv2.style.position = "absolute";
+  canv2.style.backgroundColor = "transparent";
+  canv2.style.cursor = "none";
+  document.body.appendChild(canv2);
+  canv2.addEventListener("mousemove", mouseXY, false);
+  ctx2 = canv2.getContext("2d");
+  */
+
+  // mouse cursors
+  // ToDo: they are inside the ZIP !!!
+  var cur0 = new Image();
+  var cur1 = new Image();
+  cur0.src = "./data/BW/images/misc/cursor0.png";
+  cur1.src = "./data/BW/images/misc/cursor1.png";
+  /* ToDo: don't have gametype yet
+  DrS.get("data/BW/images/misc/cursor0.png", "img", function(r) {
+    cur0.src = r;
+  })
+  DrS.get("data/BW/images/misc/cursor1.png", "img", function(r) {
+    cur1.src = r;
+  })
+  */
+
+  // renderloop
+  raf2 = requestAnimationFrame(renderMouse);
+  function renderMouse() {
+    raf2 = requestAnimationFrame(renderMouse);
+    // resize/-position
+    canv2.style.top = canvas.offsetTop +'px';
+    canv2.style.left = canvas.offsetLeft + 'px';
+    canv2.width = canvas.width;
+    canv2.height = canvas.height;
+
+    // clear
+    ctx2.clearRect(0, 0, canv2.width, canv2.height);
+
+    // limit to own screen half
+    // i tried the way bloodwych does but this fang. no, too hard to find mouse again
+    if (player[1] && input.gamepads.found) {
+      if (DrS.mouse[0].x > canv2.width) DrS.mouse[0].x = canv2.width;
+      if (DrS.mouse[0].x < 0) DrS.mouse[0].x = 0;
+      if (DrS.mouse[0].y > canv2.height/2) DrS.mouse[0].y = canv2.height/2;
+      if (DrS.mouse[0].y < 0) DrS.mouse[0].y = 0;
+
+      if (DrS.mouse[1].x > canv2.width) DrS.mouse[1].x = canv2.width;
+      if (DrS.mouse[1].x < 0) DrS.mouse[1].x = 0;
+      if (DrS.mouse[1].y > canv2.height) DrS.mouse[1].y = canv2.height;
+      if (DrS.mouse[1].y < canv2.height/2) DrS.mouse[1].y = canv2.height/2;
+    }
+
+    // draw
+    ctx2.drawImage(cur0, DrS.mouse[0].x, DrS.mouse[0].y);
+    if (player[1] && input.gamepads.found) ctx2.drawImage(cur1, DrS.mouse[1].x, DrS.mouse[1].y);
+  }
+}
+
 (function() {
     initGame();
 
     // ToDo: too large, throws warning, maybe move into rAF canvas renderer
     canvas.style.cursor = "url('data/" + GAME_ID[GAME_BLOODWYCH] + "/images/misc/cursor0.png'),auto";
     scrLoader.style.cursor = canvas.style.cursor;
+
+    // DrS: mouse in own canvas
+    addOwnMouse();
 
     document.addEventListener("deviceready", onDeviceReady, false);
     // PhoneGap is loaded and it is now safe to make calls PhoneGap methods
@@ -558,57 +624,15 @@ function godMode() {
         }
     };
     //$('body').on('tap', 'canvas', function(e) {
-    canvas.onclick = function(e) {
+    canv2.onclick = function(e) {
     // DrS: Also needed for the touch event
+    // needs deeper rework to make gamepads work
         if (e.pageX) {
             var offX = canvas.offsetLeft;
             var offY = canvas.offsetTop;
             var x = Math.floor((e.pageX - offX) / (scale * scaleReal));
             var y = Math.floor((e.pageY - offY) / (scale * scaleReal));
-            for (var p1 in player) {
-                var p = player[parseInt(p1)];
-                if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {
-                    for (var slot = 0; slot < 8; slot++) {
-                        if (uiClickInArea(x, y, slot, p, gameStateSelectGrid)) {
-                            //console.log("Slot", slot);
-                            p.message("SAVE GAME - CHANGE NAME OR ENTER TO SAVE", colourData['GREEN'], false, 0);
-                            var inp = document.getElementById('save-game');
-                            inp.blur();
-                            inp.value = getGameName(slot);
-                            saveGames.playerID = p.id;
-                            saveGames.slotID =  slot;
-                            inp.style.display = 'block';
-                            //inp.keyup();
-                            inp.focus();
-                            inp.click();
-                            //inp.tap();
-                            return false;
-                        }
-                    }
-                } else if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_LOAD) {
-                    for (var slot = 0; slot < 8; slot++) {
-                        if (uiClickInArea(x, y, slot, p, gameStateSelectGrid)) {
-                            if (getGameName(slot) !== '') {
-                                pauseGame(false);
-                                loadGame(slot);
-                                redrawUI(2);
-                                return false;
-                            }
-                        }
-                    }
-                } else if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_MENU) {
-                    if (uiClickInArea(x, y, 0, p, gameStateSelectGrid)) {
-                        p.uiCenterPanel.mode = UI_CENTER_PANEL_GAMESTATE_LOAD;
-                        showGameStateMenu(p);
-                    } else if (uiClickInArea(x, y, 1, p, gameStateSelectGrid)) {
-                        p.uiCenterPanel.mode = UI_CENTER_PANEL_GAMESTATE_SAVE;
-                        showGameStateMenu(p);
-                    } else if (uiClickInArea(x, y, 2, p, gameStateSelectGrid)) {
-                        location.reload();
-                    }
-                    return false;
-                }
-            }
+            doGameStateClicked(x, y);
         }
     };
 
@@ -625,3 +649,50 @@ function godMode() {
         canvas.focus();
     };
 })();
+
+function doGameStateClicked(x, y) {
+  for (var p1 in player) {
+      var p = player[parseInt(p1)];
+      if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {
+          for (var slot = 0; slot < 8; slot++) {
+              if (uiClickInArea(x, y, slot, p, gameStateSelectGrid)) {
+                  //console.log("Slot", slot);
+                  p.message("SAVE GAME - CHANGE NAME OR ENTER TO SAVE", colourData['GREEN'], false, 0);
+                  var inp = document.getElementById('save-game');
+                  inp.blur();
+                  inp.value = getGameName(slot);
+                  saveGames.playerID = p.id;
+                  saveGames.slotID =  slot;
+                  inp.style.display = 'block';
+                  //inp.keyup();
+                  inp.focus();
+                  inp.click();
+                  //inp.tap();
+                  return false;
+              }
+          }
+      } else if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_LOAD) {
+          for (var slot = 0; slot < 8; slot++) {
+              if (uiClickInArea(x, y, slot, p, gameStateSelectGrid)) {
+                  if (getGameName(slot) !== '') {
+                      pauseGame(false);
+                      loadGame(slot);
+                      redrawUI(2);
+                      return false;
+                  }
+              }
+          }
+      } else if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_MENU) {
+          if (uiClickInArea(x, y, 0, p, gameStateSelectGrid)) {
+              p.uiCenterPanel.mode = UI_CENTER_PANEL_GAMESTATE_LOAD;
+              showGameStateMenu(p);
+          } else if (uiClickInArea(x, y, 1, p, gameStateSelectGrid)) {
+              p.uiCenterPanel.mode = UI_CENTER_PANEL_GAMESTATE_SAVE;
+              showGameStateMenu(p);
+          } else if (uiClickInArea(x, y, 2, p, gameStateSelectGrid)) {
+              location.reload();
+          }
+          return false;
+      }
+  }
+}

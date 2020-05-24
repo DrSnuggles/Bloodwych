@@ -212,6 +212,7 @@ function handleDrop(e) {
   let dt = e.dataTransfer;
   let files = dt.files;
   var file = files[0]; // just use first dropped file
+	if (!file) return; // dropped into own
   var reader = new FileReader();
   var filename = file.name;
   reader.onload = function(ev) {

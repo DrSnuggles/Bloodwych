@@ -1,6 +1,6 @@
 function startScreen() {
     canvas.setAttribute('data-game-status', 'menu');
-    canvas.addEventListener('keydown', doKeyDown, true);
+    //canv2.addEventListener('keydown', doKeyDown, true);
     //checkClickEvents();
     canvas.focus();
 
@@ -22,7 +22,7 @@ function startScreen() {
 
 function preStartScreen() {
     canvas.setAttribute('data-game-status', 'menu');
-    canvas.addEventListener('keydown', doKeyDown, true);
+    //canv2.addEventListener('keydown', doKeyDown, true);
     checkClickEvents();
     canvas.focus();
 
@@ -69,7 +69,7 @@ function loadingScreen(objProgress){
 function progressScreen(strDetails){
 
 	//$('canvas').attr('data-game-status', 'menu');
-    canvas.addEventListener('keydown', doKeyDown, true);
+    //canv2.addEventListener('keydown', doKeyDown, true);
     canvas.focus();
 
     configCanvas();

@@ -1,3 +1,4 @@
+document.body.addEventListener('keydown', doKeyDown, true);
 function doKeyDown(e) {
   if (typeof scrLoader !== 'undefined') return false; // ToDo: find too early event adds
     if (gameStarted) {
@@ -5,7 +6,7 @@ function doKeyDown(e) {
             if (typeof player[1] !== 'undefined' && !player[1].frozen) {
                 switch (e.keyCode) {
                     case KEY_END:
-                        player[1].action();
+                        player[1].action(); // ToDo: Why not frozen check here
                         break; //End Key
                     case KEYPAD_8:
                         if (!player[1].frozen) player[1].move(DIRECTION_NORTH);
@@ -31,10 +32,10 @@ function doKeyDown(e) {
             }
             switch (e.keyCode) {
                 case KEY_SPACEBAR:
-                    player[0].action();
+                    player[0].action(); // ToDo: Why not frozen check here
                     break; // SpaceBar
                 case KEY_W:
-                    player[0].move(DIRECTION_NORTH);
+                    if (!player[0].frozen) player[0].move(DIRECTION_NORTH);
                     break; // W KEY
                 case KEY_S:
                     if (!player[0].frozen) player[0].move(DIRECTION_SOUTH);
@@ -228,41 +229,49 @@ function checkClickEvents() {
     document.onclick = function(e) {
         var x = (e.pageX - (canvas.offsetLeft * scaleReal)) / (scale * scaleReal);
         var y = (e.pageY - (canvas.offsetTop * scaleReal)) / (scale * scaleReal);
-        if (canvas.getAttribute('data-game-status') === 'started') {
-            //if (paused) {
-            //	pauseGame(false);
-            //}
-            var p = 0;
-            for(var pid in player) {
-                pid = parseInt(pid);
-                p += processCanvasInput(pid, x, y) + 1;
-            }
-            if (p > 0) {
-                redrawUI(p - 1);
-            }
-        } else if (canvas.getAttribute('data-game-status') === 'menu') {
-            processCanvasInputMenu(x, y);
-        } else if (canvas.getAttribute('data-game-status') === 'menu-champions') {
-            uiChampSelectArea(x, y, currentPlayer);
-
-            if (championSelect[currentPlayer].mode === UI_CHARACTER_SELECT_POCKET) {
-                for(var s = UI_CLICK_POCKET_SLOT_1; s <= UI_CLICK_POCKET_SLOT_12; s++) {
-                    if (uiClickInArea(x, y, s, player[currentPlayer])) {
-                        var it = champion[championSelect[currentPlayer].champID].pocket[(s - UI_CLICK_POCKET_SLOT_1)];
-                        if (currentPlayer === 0) {
-                            drawFillRect(168, player[currentPlayer].ScreenY + 79, 155, 8, colourData['BLUE_DARK']);
-                        } else {
-                            drawFillRect(168, player[currentPlayer].ScreenY + 79, 155, 8, colourData['RED_DARK']);
-                        }
-                        writeFontImage(itemJson[it.id].name, 170, (player[currentPlayer].ScreenY + 80), colourData['YELLOW']);
-                    }
-                }
-            } else if (championSelect[currentPlayer].mode === UI_CHARACTER_SELECT_SPELLBOOK) {
-                spellBookAreas(x, y, player[currentPlayer]);
-            }
-
+        // limit clicks in 2 cursor mode
+        if (player[1] && input.gamepads.found && e.pageY > canv2.clientHeight/2) {
+          return;
         }
+        doClicked(x, y);
     };
+}
+
+function doClicked(x, y) {
+  if (canvas.getAttribute('data-game-status') === 'started') {
+      //if (paused) {
+      //	pauseGame(false);
+      //}
+      var p = 0;
+      for(var pid in player) {
+          pid = parseInt(pid);
+          p += processCanvasInput(pid, x, y) + 1;
+      }
+      if (p > 0) {
+          redrawUI(p - 1);
+      }
+  } else if (canvas.getAttribute('data-game-status') === 'menu') {
+      processCanvasInputMenu(x, y);
+  } else if (canvas.getAttribute('data-game-status') === 'menu-champions') {
+      uiChampSelectArea(x, y, currentPlayer);
+
+      if (championSelect[currentPlayer].mode === UI_CHARACTER_SELECT_POCKET) {
+          for(var s = UI_CLICK_POCKET_SLOT_1; s <= UI_CLICK_POCKET_SLOT_12; s++) {
+              if (uiClickInArea(x, y, s, player[currentPlayer])) {
+                  var it = champion[championSelect[currentPlayer].champID].pocket[(s - UI_CLICK_POCKET_SLOT_1)];
+                  if (currentPlayer === 0) {
+                      drawFillRect(168, player[currentPlayer].ScreenY + 79, 155, 8, colourData['BLUE_DARK']);
+                  } else {
+                      drawFillRect(168, player[currentPlayer].ScreenY + 79, 155, 8, colourData['RED_DARK']);
+                  }
+                  writeFontImage(itemJson[it.id].name, 170, (player[currentPlayer].ScreenY + 80), colourData['YELLOW']);
+              }
+          }
+      } else if (championSelect[currentPlayer].mode === UI_CHARACTER_SELECT_SPELLBOOK) {
+          spellBookAreas(x, y, player[currentPlayer]);
+      }
+
+  }
 }
 
 function processCanvasInput(pid, x, y) {
@@ -635,6 +644,15 @@ function mouseXY(e) {
     if (e.offsetX) {
         mouseX = e.offsetX;
         mouseY = e.offsetY;
+        // use modifier keys to set cursor2
+        if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) {
+          DrS.mouse[1].x += e.movementX;
+          DrS.mouse[1].y += e.movementY;
+        } else {
+          DrS.mouse[0].x = mouseX;
+          DrS.mouse[0].y = mouseY;
+        }
+
         var currentColour = cursorType;
         if (typeof player[0] !== 'undefined') {
             if (typeof player[1] !== 'undefined') {
@@ -1541,7 +1559,11 @@ function createSelectGrid(myObject, myX, myY, myWidth, myHeight, cid) {
 */
 addEventListener("contextmenu", function(e) {
   e.preventDefault();// do not show std. browser context menu
+  if (!player[1])
+    closeAllMenus(); // only when in single player mode
+}, false);
 
+function closeAllMenus() {
   // for all players
   for (let p in player) {
     player[p].uiLeftPanel.mode = 0;
@@ -1552,4 +1574,180 @@ addEventListener("contextmenu", function(e) {
     redrawPlayerUiFlag = 3;
     drawUI(player[p]);
   }
-}, false);
+}
+/*
+  DrSnuggles gamepad
+*/
+
+var input = (function() {
+  var my = {};
+
+  //
+  // gamepad
+  //
+  my.gamepads = (function(){
+    var my = {
+      found: false,   // if analog gamepad was found
+      switchGP: true, // false := 1st found gamepad is used for player one
+      gps: [
+        [
+          {10:false}, //click
+          {13:false}, //close
+          {12:false}, //action
+          {2:false},  //turnLeft
+          {3:false},  //walk
+          {1:false},  //turnRight
+          {4:false},  //strafeLeft
+          {0:false},  //back
+          {5:false},  //strafeRight
+        ],
+        [
+          {10:false}, //click
+          {13:false}, //close
+          {12:false}, //action
+          {2:false},  //turnLeft
+          {3:false},  //walk
+          {1:false},  //turnRight
+          {4:false},  //strafeLeft
+          {0:false},  //back
+          {5:false},  //strafeRight
+        ],
+      ],
+      deadzones: [0.23, 0.23],    // deadzone for 2 gamepads xDeadzone = yDeadzone
+      multiplier: [4.5, 4.5],    // multiplier for 2 gamepads xDeadzone = yDeadzone
+    };
+    var raf = null,
+    gp,
+    controller;
+
+    my.toggleGP = function() {
+       // toggle gamepad polling
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+        return false;
+      } else {
+        raf = requestAnimationFrame(loop);
+        return true;
+      }
+    };
+    var loop = function() {
+      raf = requestAnimationFrame(loop);
+
+      var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+      controller = my.switchGP ? [1,0] : [0,1];
+      for (var i = 0; i < gamepads.length; i++) {
+        gp = gamepads[i];
+        if (gp) {
+          //console.log("Gamepad connected at index " + gp.index + ": " + gp.id + ". It has " + gp.buttons.length + " buttons and " + gp.axes.length + " axes.");
+
+          // use analog input for mouse cursor
+          // use digital 6/8way to move
+          // to find your settings use https://html5gamepad.com/
+          // i use xbox360 here as reference
+          // first analog stick (left) = mouse
+          // [0] mouse click = button10 (left stick click)
+          // [1] RMB = button13 = dig. pad down
+          // [2] turn left = button2 = X
+          // [3] walk = button3 = Y
+          // [4] turn right = button1 = B
+          // [5] strafe left = button4 = LB
+          // [6] walk back = button0 = A
+          // [7] strafe right = button5 = RB
+
+          // just the first two controllers
+          if (i < 2) {
+            // only analog gamepads for now
+            if (gp.axes.length > 1) {
+              my.found = true;
+              // analog stick = mouse
+              // check raw against deadzone ... multiplier
+              DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.deadzones[controller[i]]) ? 0 : gp.axes[0] * my.multiplier[controller[i]];
+              DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.deadzones[controller[i]]) ? 0 : gp.axes[1] * my.multiplier[controller[i]];
+
+              // debug
+              //DrS.mouse[controller[i+1]].x += (Math.abs(gp.axes[2]) < my.deadzones[controller[i+1]]) ? 0 : gp.axes[2] * my.multiplier[controller[i+1]];
+              //DrS.mouse[controller[i+1]].y += (Math.abs(gp.axes[3]) < my.deadzones[controller[i+1]]) ? 0 : gp.axes[3] * my.multiplier[controller[i+1]];
+
+              // mouse click
+              if (chkButton(i, 0)) {
+                var x = DrS.mouse[controller[i]].x / (scale * scaleReal);
+                var y = DrS.mouse[controller[i]].y / (scale * scaleReal);
+                doClicked(x, y);
+                doGameStateClicked(x, y); // yes, were 2 independet onclick handlers, not sure if i keep
+              }
+              // rmb mouse click
+              if (chkButton(i, 1)) {
+                closeAllMenus();
+              }
+
+              if(typeof player === "undefined") return;
+              if(typeof player[0] === "undefined") return;
+              if(typeof player[0].frozen === "undefined") return;
+
+              // player
+              if (!player[controller[i]].frozen) {
+                // action
+                if (chkButton(i, 2)) {
+                  player[controller[i]].action();
+                }
+                // turn left
+                if (chkButton(i, 3)) {
+                  player[controller[i]].rotate(-1);
+                }
+                // walk
+                if (chkButton(i, 4)) {
+                  player[controller[i]].move(DIRECTION_NORTH);
+                }
+                // turn right
+                if (chkButton(i, 5)) {
+                  player[controller[i]].rotate(1);
+                }
+                // strafe left
+                if (chkButton(i, 6)) {
+                  player[controller[i]].move(DIRECTION_WEST);
+                }
+                // walk back
+                if (chkButton(i, 7)) {
+                  player[controller[i]].move(DIRECTION_SOUTH);
+                }
+                // strafe back
+                if (chkButton(i, 8)) {
+                  player[controller[i]].move(DIRECTION_EAST);
+                }
+              }
+            } else {
+              my.found |= false; // no analog gamepads found
+            }
+          } else {
+            break; // just use two gamepads
+          }
+
+        }
+      }
+    }; // loop
+    raf = requestAnimationFrame(loop);
+    function getKey(o) {
+      return Object.keys(o)[0];
+    }
+    function chkButton(ctr, btn) {
+      var key = getKey( my.gps[controller[ctr]][btn] );
+      var oldState = my.gps[controller[ctr]][btn][key];
+      var pressed = gp.buttons[key].pressed;
+      if (pressed && !oldState) {
+        // press
+        my.gps[controller[ctr]][btn][key] = true;
+        return true;
+      } else if (!pressed) {
+        // release
+        my.gps[controller[ctr]][btn][key] = false;
+        return false;
+      }
+      return false;
+    }
+
+    return my;
+  })();
+
+  return my;
+})();
