@@ -1652,7 +1652,7 @@ var input = (function() {
       gps: [
         {
           walkMode: false, // in which mode are we? BW starts in cursor mode
-          holdMode: false, // switch to true if you want to hold switch button
+          holdMode: true, // switch to true if you want to hold switch button
           deadZone: {x:0.25,y:0.25}, // for analog stick
           multiplier: {x:4.5,y:4.5}, // how fast the mouse should move
           click: {b:0,s:false},
@@ -1669,7 +1669,7 @@ var input = (function() {
           analog: {up:false,down:false,left:false,right:false},
         },{
           walkMode: false,
-          holdMode: false,
+          holdMode: true,
           deadZone: {x:0.25,y:0.25},
           multiplier: {x:4.5,y:4.5},
           click: {b:0,s:false},
@@ -1719,31 +1719,7 @@ var input = (function() {
             if(typeof player === "undefined" || typeof player[0] === "undefined" || typeof player[0].frozen === "undefined") {
               // below code is double here
               // cursor mode
-              if (chkButton(i, "up", true)) {
-                DrS.mouse[controller[i]].y += -1.0 * my.gps[controller[i]].multiplier.y;
-              }
-              if (chkButton(i, "down", true)) {
-                DrS.mouse[controller[i]].y += 1.0 * my.gps[controller[i]].multiplier.y;
-              }
-              if (chkButton(i, "left", true)) {
-                DrS.mouse[controller[i]].x += -1.0 * my.gps[controller[i]].multiplier.x;
-              }
-              if (chkButton(i, "right", true)) {
-                DrS.mouse[controller[i]].x += 1.0 * my.gps[controller[i]].multiplier.x;
-              }
-              if (chkButton(i, "click")) {
-                var x = DrS.mouse[controller[i]].x / (scale * scaleReal);
-                var y = DrS.mouse[controller[i]].y / (scale * scaleReal);
-                doClicked(x, y);
-              }
-
-              // analog input
-              if (gp.axes.length > 1) {
-                // check raw against deadzone ... multiplier
-                DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.gps[controller[i]].deadZone.x) ? 0 : gp.axes[0] * my.gps[controller[i]].multiplier.x;
-                DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.gps[controller[i]].deadZone.y) ? 0 : gp.axes[1] * my.gps[controller[i]].multiplier.y;
-              }
-
+              cursorMode(i, controller);
               return;
             };
 
@@ -1751,9 +1727,18 @@ var input = (function() {
             if (chkButton(i, "pause")) {
               pauseGame(true);
             }
-            if (chkButton(i, "switch")) {
-              my.gps[controller[i]].walkMode = !my.gps[controller[i]].walkMode;
+            if (my.gps[controller[i]].holdMode) {
+              if (chkButton(i, "switch", true)) {
+                my.gps[controller[i]].walkMode = true;
+              } else {
+                my.gps[controller[i]].walkMode = false;
+              }
+            } else {
+              if (chkButton(i, "switch")) {
+                my.gps[controller[i]].walkMode = !my.gps[controller[i]].walkMode;
+              }
             }
+
             if (chkButton(i, "action") && !player[controller[i]].frozen) {
               player[controller[i]].action();
             }
@@ -1809,33 +1794,7 @@ var input = (function() {
 
             } else {
               // cursor mode
-              if (chkButton(i, "up", true)) {
-                DrS.mouse[controller[i]].y += -1.0 * my.gps[controller[i]].multiplier.y;
-              }
-              if (chkButton(i, "down", true)) {
-                DrS.mouse[controller[i]].y += 1.0 * my.gps[controller[i]].multiplier.y;
-              }
-              if (chkButton(i, "left", true)) {
-                DrS.mouse[controller[i]].x += -1.0 * my.gps[controller[i]].multiplier.x;
-              }
-              if (chkButton(i, "right", true)) {
-                DrS.mouse[controller[i]].x += 1.0 * my.gps[controller[i]].multiplier.x;
-              }
-              if (chkButton(i, "click")) {
-                pauseGame(false);
-                var x = DrS.mouse[controller[i]].x / (scale * scaleReal);
-                var y = DrS.mouse[controller[i]].y / (scale * scaleReal);
-                doClicked(x, y);
-                doGameStateClicked(x, y); // yes, we have 2 onclick handlers
-              }
-
-              // analog input
-              if (gp.axes.length > 1) {
-                // check raw against deadzone ... multiplier
-                DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.gps[controller[i]].deadZone.x) ? 0 : gp.axes[0] * my.gps[controller[i]].multiplier.x;
-                DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.gps[controller[i]].deadZone.y) ? 0 : gp.axes[1] * my.gps[controller[i]].multiplier.y;
-              }
-
+              cursorMode(i, controller);
             } // mode
 
           } else {
@@ -1909,6 +1868,33 @@ var input = (function() {
         my.gps[controller[ctr]].analog.right = right;
         return toggled;
       } // axisLength
+    }
+    function cursorMode(i, controller) {
+      if (chkButton(i, "up", true)) {
+        DrS.mouse[controller[i]].y += -1.0 * my.gps[controller[i]].multiplier.y;
+      }
+      if (chkButton(i, "down", true)) {
+        DrS.mouse[controller[i]].y += 1.0 * my.gps[controller[i]].multiplier.y;
+      }
+      if (chkButton(i, "left", true)) {
+        DrS.mouse[controller[i]].x += -1.0 * my.gps[controller[i]].multiplier.x;
+      }
+      if (chkButton(i, "right", true)) {
+        DrS.mouse[controller[i]].x += 1.0 * my.gps[controller[i]].multiplier.x;
+      }
+      if (chkButton(i, "click")) {
+        var x = DrS.mouse[controller[i]].x / (scale * scaleReal);
+        var y = DrS.mouse[controller[i]].y / (scale * scaleReal);
+        doClicked(x, y);
+        doGameStateClicked(x, y); // yes, we have 2 onclick handlers
+      }
+
+      // analog input
+      if (gp.axes.length > 1) {
+        // check raw against deadzone ... multiplier
+        DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.gps[controller[i]].deadZone.x) ? 0 : gp.axes[0] * my.gps[controller[i]].multiplier.x;
+        DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.gps[controller[i]].deadZone.y) ? 0 : gp.axes[1] * my.gps[controller[i]].multiplier.y;
+      }
     }
 
     return my;
