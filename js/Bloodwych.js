@@ -35,78 +35,12 @@ var saveGames = {
   slotID: 0,
 };
 
-function addOwnMouse() {
-  // check if we have analog gamepad
-
-  // add 2nd canvas (only for mouse cursors)
-  /*
-  var canv2 = document.createElement("canvas");
-  canv2.id = "canv2";
-  canv2.style.position = "absolute";
-  canv2.style.backgroundColor = "transparent";
-  canv2.style.cursor = "none";
-  document.body.appendChild(canv2);
-  canv2.addEventListener("mousemove", mouseXY, false);
-  ctx2 = canv2.getContext("2d");
-  */
-
-  // mouse cursors
-  // ToDo: they are inside the ZIP !!!
-  var cur0 = new Image();
-  var cur1 = new Image();
-  cur0.src = "./data/BW/images/misc/cursor0.png";
-  cur1.src = "./data/BW/images/misc/cursor1.png";
-  /* ToDo: don't have gametype yet
-  DrS.get("data/BW/images/misc/cursor0.png", "img", function(r) {
-    cur0.src = r;
-  })
-  DrS.get("data/BW/images/misc/cursor1.png", "img", function(r) {
-    cur1.src = r;
-  })
-  */
-
-  // renderloop
-  raf2 = requestAnimationFrame(renderMouse);
-  function renderMouse() {
-    raf2 = requestAnimationFrame(renderMouse);
-    // resize/-position
-    canv2.style.top = canvas.offsetTop +'px';
-    canv2.style.left = canvas.offsetLeft + 'px';
-    canv2.width = canvas.width;
-    canv2.height = canvas.height;
-
-    // clear
-    ctx2.clearRect(0, 0, canv2.width, canv2.height);
-
-    // limit to own screen half
-    // i tried the way bloodwych does but this fang. no, too hard to find mouse again
-    if (player[1] && input.gamepads.found) {
-      if (DrS.mouse[0].x > canv2.width) DrS.mouse[0].x = canv2.width;
-      if (DrS.mouse[0].x < 0) DrS.mouse[0].x = 0;
-      if (DrS.mouse[0].y > canv2.height/2) DrS.mouse[0].y = canv2.height/2;
-      if (DrS.mouse[0].y < 0) DrS.mouse[0].y = 0;
-
-      if (DrS.mouse[1].x > canv2.width) DrS.mouse[1].x = canv2.width;
-      if (DrS.mouse[1].x < 0) DrS.mouse[1].x = 0;
-      if (DrS.mouse[1].y > canv2.height) DrS.mouse[1].y = canv2.height;
-      if (DrS.mouse[1].y < canv2.height/2) DrS.mouse[1].y = canv2.height/2;
-    }
-
-    // draw
-    ctx2.drawImage(cur0, DrS.mouse[0].x, DrS.mouse[0].y);
-    if (player[1] && input.gamepads.found) ctx2.drawImage(cur1, DrS.mouse[1].x, DrS.mouse[1].y);
-  }
-}
-
 (function() {
     initGame();
 
     // ToDo: too large, throws warning, maybe move into rAF canvas renderer
     canvas.style.cursor = "url('data/" + GAME_ID[GAME_BLOODWYCH] + "/images/misc/cursor0.png'),auto";
     scrLoader.style.cursor = canvas.style.cursor;
-
-    // DrS: mouse in own canvas
-    addOwnMouse();
 
     document.addEventListener("deviceready", onDeviceReady, false);
     // PhoneGap is loaded and it is now safe to make calls PhoneGap methods

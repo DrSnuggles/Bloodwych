@@ -1577,10 +1577,70 @@ function closeAllMenus() {
 }
 /*
   DrSnuggles gamepad
+  tried to copy the CD32 controls from HungryHorace
+  still needs some type how to config for end users
+  actually i map it the way WinUAE does for my xbox360
+  use https://html5gamepad.com/ to find your button#
 */
 
 var input = (function() {
   var my = {};
+
+  //
+  // mouse
+  //
+  my.mouse = (function() {
+    // mouse cursors are inside the ZIPs, but don't have gametype yet
+    var cur0 = new Image(),
+    cur1 = new Image(),
+    raf;
+    cur0.src = "./data/BW/images/misc/cursor0.png";
+    cur1.src = "./data/BW/images/misc/cursor1.png";
+
+    // renderloop
+    raf = requestAnimationFrame(renderMouse);
+    function renderMouse() {
+      raf = requestAnimationFrame(renderMouse);
+      // resize/-position
+      canv2.style.top = canvas.offsetTop +'px';
+      canv2.style.left = canvas.offsetLeft + 'px';
+      canv2.width = canvas.width;
+      canv2.height = canvas.height;
+
+      // clear
+      ctx2.clearRect(0, 0, canv2.width, canv2.height);
+
+      // limit to own screen half
+      if (player[1] && input.gamepads.found) {
+        if (DrS.mouse[0].x > canv2.width) DrS.mouse[0].x = 0;
+        if (DrS.mouse[0].x < 0) DrS.mouse[0].x = canv2.width;
+        if (DrS.mouse[0].y > 260) DrS.mouse[0].y = 260;
+        if (DrS.mouse[0].y < 30) DrS.mouse[0].y = 30;
+
+        if (DrS.mouse[1].x > canv2.width) DrS.mouse[1].x = 0;
+        if (DrS.mouse[1].x < 0) DrS.mouse[1].x = canv2.width;
+        if (DrS.mouse[1].y > 565) DrS.mouse[1].y = 565;
+        if (DrS.mouse[1].y < 340) DrS.mouse[1].y = 340;
+      }
+      // draw
+      if (input.gamepads.found) {
+        //var controller = input.gamepads.switchGP ? [1,0] : [0,1];
+        if (!input.gamepads.gps[0].walkMode) {
+          ctx2.drawImage(cur0, DrS.mouse[0].x, DrS.mouse[0].y);
+        }
+        if (player[1]) {
+          if (!input.gamepads.gps[1].walkMode) {
+            ctx2.drawImage(cur1, DrS.mouse[1].x, DrS.mouse[1].y);
+          }
+        }
+      } else {
+        // no gamepad found always draw, classic
+        ctx2.drawImage(cur0, DrS.mouse[0].x, DrS.mouse[0].y);
+      }
+    }
+
+    return my;
+  })();
 
   //
   // gamepad
@@ -1588,33 +1648,43 @@ var input = (function() {
   my.gamepads = (function(){
     var my = {
       found: false,   // if analog gamepad was found
-      switchGP: true, // false := 1st found gamepad is used for player one
+      switchGP: false, // false := 1st found gamepad is used for player one
       gps: [
-        [
-          {10:false}, //click
-          {13:false}, //close
-          {12:false}, //action
-          {2:false},  //turnLeft
-          {3:false},  //walk
-          {1:false},  //turnRight
-          {4:false},  //strafeLeft
-          {0:false},  //back
-          {5:false},  //strafeRight
-        ],
-        [
-          {10:false}, //click
-          {13:false}, //close
-          {12:false}, //action
-          {2:false},  //turnLeft
-          {3:false},  //walk
-          {1:false},  //turnRight
-          {4:false},  //strafeLeft
-          {0:false},  //back
-          {5:false},  //strafeRight
-        ],
-      ],
-      deadzones: [0.23, 0.23],    // deadzone for 2 gamepads xDeadzone = yDeadzone
-      multiplier: [4.5, 4.5],    // multiplier for 2 gamepads xDeadzone = yDeadzone
+        {
+          walkMode: false, // in which mode are we? BW starts in cursor mode
+          holdMode: false, // switch to true if you want to hold switch button
+          deadZone: {x:0.25,y:0.25}, // for analog stick
+          multiplier: {x:4.5,y:4.5}, // how fast the mouse should move
+          click: {b:0,s:false},
+          switch: {b:1,s:false},
+          action: {b:3,s:false},
+          attack: {b:2,s:false},
+          strafeLeft: {b:4,s:false},
+          strafeRight: {b:5,s:false},
+          pause: {b:8,s:false},
+          up: {b:12,s:false},
+          down: {b:13,s:false},
+          left: {b:14,s:false},
+          right: {b:15,s:false},
+          analog: {up:false,down:false,left:false,right:false},
+        },{
+          walkMode: false,
+          holdMode: false,
+          deadZone: {x:0.25,y:0.25},
+          multiplier: {x:4.5,y:4.5},
+          click: {b:0,s:false},
+          switch: {b:1,s:false},
+          action: {b:3,s:false},
+          attack: {b:2,s:false},
+          strafeLeft: {b:4,s:false},
+          strafeRight: {b:5,s:false},
+          pause: {b:8,s:false},
+          up: {b:12,s:false},
+          down: {b:13,s:false},
+          left: {b:14,s:false},
+          right: {b:15,s:false},
+          analog: {up:false,down:false,left:false,right:false},
+        }],
     };
     var raf = null,
     gp,
@@ -1641,109 +1711,204 @@ var input = (function() {
         if (gp) {
           //console.log("Gamepad connected at index " + gp.index + ": " + gp.id + ". It has " + gp.buttons.length + " buttons and " + gp.axes.length + " axes.");
 
-          // use analog input for mouse cursor
-          // use digital 6/8way to move
-          // to find your settings use https://html5gamepad.com/
-          // i use xbox360 here as reference
-          // first analog stick (left) = mouse
-          // [0] mouse click = button10 (left stick click)
-          // [1] RMB = button13 = dig. pad down
-          // [2] turn left = button2 = X
-          // [3] walk = button3 = Y
-          // [4] turn right = button1 = B
-          // [5] strafe left = button4 = LB
-          // [6] walk back = button0 = A
-          // [7] strafe right = button5 = RB
-
           // just the first two controllers
           if (i < 2) {
-            // only analog gamepads for now
-            if (gp.axes.length > 1) {
-              my.found = true;
-              // analog stick = mouse
-              // check raw against deadzone ... multiplier
-              DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.deadzones[controller[i]]) ? 0 : gp.axes[0] * my.multiplier[controller[i]];
-              DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.deadzones[controller[i]]) ? 0 : gp.axes[1] * my.multiplier[controller[i]];
+            my.found = true; // also digpad only gamepads are ok
 
-              // debug
-              //DrS.mouse[controller[i+1]].x += (Math.abs(gp.axes[2]) < my.deadzones[controller[i+1]]) ? 0 : gp.axes[2] * my.multiplier[controller[i+1]];
-              //DrS.mouse[controller[i+1]].y += (Math.abs(gp.axes[3]) < my.deadzones[controller[i+1]]) ? 0 : gp.axes[3] * my.multiplier[controller[i+1]];
-
-              // mouse click
-              if (chkButton(i, 0)) {
+            // player is not yet available, we are in menu
+            if(typeof player === "undefined" || typeof player[0] === "undefined" || typeof player[0].frozen === "undefined") {
+              // below code is double here
+              // cursor mode
+              if (chkButton(i, "up", true)) {
+                DrS.mouse[controller[i]].y += -1.0 * my.gps[controller[i]].multiplier.y;
+              }
+              if (chkButton(i, "down", true)) {
+                DrS.mouse[controller[i]].y += 1.0 * my.gps[controller[i]].multiplier.y;
+              }
+              if (chkButton(i, "left", true)) {
+                DrS.mouse[controller[i]].x += -1.0 * my.gps[controller[i]].multiplier.x;
+              }
+              if (chkButton(i, "right", true)) {
+                DrS.mouse[controller[i]].x += 1.0 * my.gps[controller[i]].multiplier.x;
+              }
+              if (chkButton(i, "click")) {
                 var x = DrS.mouse[controller[i]].x / (scale * scaleReal);
                 var y = DrS.mouse[controller[i]].y / (scale * scaleReal);
                 doClicked(x, y);
-                doGameStateClicked(x, y); // yes, were 2 independet onclick handlers, not sure if i keep
-              }
-              // rmb mouse click
-              if (chkButton(i, 1)) {
-                closeAllMenus();
               }
 
-              if(typeof player === "undefined") return;
-              if(typeof player[0] === "undefined") return;
-              if(typeof player[0].frozen === "undefined") return;
+              // analog input
+              if (gp.axes.length > 1) {
+                // check raw against deadzone ... multiplier
+                DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.gps[controller[i]].deadZone.x) ? 0 : gp.axes[0] * my.gps[controller[i]].multiplier.x;
+                DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.gps[controller[i]].deadZone.y) ? 0 : gp.axes[1] * my.gps[controller[i]].multiplier.y;
+              }
 
-              // player
+              return;
+            };
+
+            // mode independent buttons
+            if (chkButton(i, "pause")) {
+              pauseGame(true);
+            }
+            if (chkButton(i, "switch")) {
+              my.gps[controller[i]].walkMode = !my.gps[controller[i]].walkMode;
+            }
+            if (chkButton(i, "action") && !player[controller[i]].frozen) {
+              player[controller[i]].action();
+            }
+            if (chkButton(i, "attack") && !player[controller[i]].frozen) {
+              player[controller[i]].attacking = true;
+            }
+
+            // in which mode are we
+            if (my.gps[controller[i]].walkMode) {
+              // walk mode
+              // check if player is frozen
               if (!player[controller[i]].frozen) {
-                // action
-                if (chkButton(i, 2)) {
-                  player[controller[i]].action();
-                }
-                // turn left
-                if (chkButton(i, 3)) {
-                  player[controller[i]].rotate(-1);
-                }
-                // walk
-                if (chkButton(i, 4)) {
+                if (chkButton(i, "up")) {
                   player[controller[i]].move(DIRECTION_NORTH);
                 }
-                // turn right
-                if (chkButton(i, 5)) {
-                  player[controller[i]].rotate(1);
-                }
-                // strafe left
-                if (chkButton(i, 6)) {
-                  player[controller[i]].move(DIRECTION_WEST);
-                }
-                // walk back
-                if (chkButton(i, 7)) {
+                if (chkButton(i, "down")) {
                   player[controller[i]].move(DIRECTION_SOUTH);
                 }
-                // strafe back
-                if (chkButton(i, 8)) {
+                if (chkButton(i, "left")) {
+                  player[controller[i]].rotate(-1);
+                }
+                if (chkButton(i, "right")) {
+                  player[controller[i]].rotate(1);
+                }
+                if (chkButton(i, "strafeLeft")) {
+                  player[controller[i]].move(DIRECTION_WEST);
+                }
+                if (chkButton(i, "strafeRight")) {
                   player[controller[i]].move(DIRECTION_EAST);
                 }
-              }
+                if (chkButton(i, "click")) {
+                  pauseGame(false);
+                }
+
+                // analog input
+                switch (chkAnalog(i)) {
+                  case "up":
+                    player[controller[i]].move(DIRECTION_NORTH);
+                    break;
+                  case "down":
+                    player[controller[i]].move(DIRECTION_SOUTH);
+                    break;
+                  case "left":
+                    player[controller[i]].rotate(-1);
+                    break;
+                  case "right":
+                    player[controller[i]].rotate(1);
+                    break;
+                  default:
+                }
+
+              } // frozen
+
             } else {
-              my.found |= false; // no analog gamepads found
-            }
+              // cursor mode
+              if (chkButton(i, "up", true)) {
+                DrS.mouse[controller[i]].y += -1.0 * my.gps[controller[i]].multiplier.y;
+              }
+              if (chkButton(i, "down", true)) {
+                DrS.mouse[controller[i]].y += 1.0 * my.gps[controller[i]].multiplier.y;
+              }
+              if (chkButton(i, "left", true)) {
+                DrS.mouse[controller[i]].x += -1.0 * my.gps[controller[i]].multiplier.x;
+              }
+              if (chkButton(i, "right", true)) {
+                DrS.mouse[controller[i]].x += 1.0 * my.gps[controller[i]].multiplier.x;
+              }
+              if (chkButton(i, "click")) {
+                pauseGame(false);
+                var x = DrS.mouse[controller[i]].x / (scale * scaleReal);
+                var y = DrS.mouse[controller[i]].y / (scale * scaleReal);
+                doClicked(x, y);
+                doGameStateClicked(x, y); // yes, we have 2 onclick handlers
+              }
+
+              // analog input
+              if (gp.axes.length > 1) {
+                // check raw against deadzone ... multiplier
+                DrS.mouse[controller[i]].x += (Math.abs(gp.axes[0]) < my.gps[controller[i]].deadZone.x) ? 0 : gp.axes[0] * my.gps[controller[i]].multiplier.x;
+                DrS.mouse[controller[i]].y += (Math.abs(gp.axes[1]) < my.gps[controller[i]].deadZone.y) ? 0 : gp.axes[1] * my.gps[controller[i]].multiplier.y;
+              }
+
+            } // mode
+
           } else {
             break; // just use two gamepads
           }
-
         }
       }
     }; // loop
     raf = requestAnimationFrame(loop);
-    function getKey(o) {
-      return Object.keys(o)[0];
-    }
-    function chkButton(ctr, btn) {
-      var key = getKey( my.gps[controller[ctr]][btn] );
-      var oldState = my.gps[controller[ctr]][btn][key];
-      var pressed = gp.buttons[key].pressed;
-      if (pressed && !oldState) {
+
+    function chkButton(ctr, btn, force) {
+      var b = my.gps[controller[ctr]][btn];
+      var oldState = b.s;
+      var pressed = gp.buttons[b.b].pressed;
+      if (pressed && (!oldState || force)) {
         // press
-        my.gps[controller[ctr]][btn][key] = true;
-        return true;
+        return b.s = true;
       } else if (!pressed) {
         // release
-        my.gps[controller[ctr]][btn][key] = false;
-        return false;
+        return b.s = false;
       }
       return false;
+    }
+    function chkAnalog(ctr) {
+      if (gp.axes.length > 1) {
+        // new approach: check which axis is strongest
+        var left = right = up = down = false;
+        var toggled = "";
+        var axisX = Math.abs(gp.axes[0]);
+        var axisY = Math.abs(gp.axes[1]);
+        if (axisX >= axisY) {
+          // x stronger
+          if (axisX > my.gps[controller[ctr]].deadZone.x) {
+            // stronger then deadzone
+            if (gp.axes[0] < 0) {
+              // left
+              left = true;
+              if (!my.gps[controller[ctr]].analog.left) {
+                toggled = "left";
+              }
+            } else {
+              // right
+              right = true;
+              if (!my.gps[controller[ctr]].analog.right) {
+                toggled = "right";
+              }
+            }
+          }
+        } else {
+          // y stronger
+          if (axisY > my.gps[controller[ctr]].deadZone.y) {
+            // stronger then deadzone
+            if (gp.axes[1] < 0) {
+              // up
+              up = true;
+              if (!my.gps[controller[ctr]].analog.up) {
+                toggled = "up";
+              }
+            } else {
+              // down
+              down = true;
+              if (!my.gps[controller[ctr]].analog.down) {
+                toggled = "down";
+              }
+            }
+          }
+        }
+        my.gps[controller[ctr]].analog.up = up;
+        my.gps[controller[ctr]].analog.down = down;
+        my.gps[controller[ctr]].analog.left = left;
+        my.gps[controller[ctr]].analog.right = right;
+        return toggled;
+      } // axisLength
     }
 
     return my;
