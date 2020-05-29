@@ -38,7 +38,7 @@ var VERSION = 0.50;
 var versionThis = 0.50;
 var Types = {};
 var gameStarted = false;
-var scale = 3;
+var scale = 1;
 var scaleReal = scale;
 var debugWindow;
 var game;

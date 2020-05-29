@@ -227,10 +227,11 @@ function doKeyDown(e) {
 function checkClickEvents() {
     //$(document).on('tap', 'html', function(e) {
     document.onclick = function(e) {
+        if (e.target !== canv2) return;
         var x = (e.pageX - (canvas.offsetLeft * scaleReal)) / (scale * scaleReal);
         var y = (e.pageY - (canvas.offsetTop * scaleReal)) / (scale * scaleReal);
         // limit clicks in 2 cursor mode
-        if (player[1] && input.gamepads.found && e.pageY > canv2.clientHeight/2) {
+        if (player[1] && input.gamepads.found && (e.pageY > canv2.height/2)) {
           return;
         }
         doClicked(x, y);
@@ -238,6 +239,8 @@ function checkClickEvents() {
 }
 
 function doClicked(x, y) {
+  x /= (canv2.width / canvas.width);
+  y /= (canv2.height / canvas.height);
   if (canvas.getAttribute('data-game-status') === 'started') {
       //if (paused) {
       //	pauseGame(false);
@@ -644,14 +647,8 @@ function mouseXY(e) {
     if (e.offsetX) {
         mouseX = e.offsetX;
         mouseY = e.offsetY;
-        // use modifier keys to set cursor2
-        if (e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) {
-          DrS.mouse[1].x += e.movementX;
-          DrS.mouse[1].y += e.movementY;
-        } else {
-          DrS.mouse[0].x = mouseX;
-          DrS.mouse[0].y = mouseY;
-        }
+        DrS.mouse[0].x = mouseX;
+        DrS.mouse[0].y = mouseY;
 
         var currentColour = cursorType;
         if (typeof player[0] !== 'undefined') {
@@ -1604,8 +1601,6 @@ var input = (function() {
       // resize/-position
       canv2.style.top = canvas.offsetTop +'px';
       canv2.style.left = canvas.offsetLeft + 'px';
-      canv2.width = canvas.width;
-      canv2.height = canvas.height;
 
       // clear
       ctx2.clearRect(0, 0, canv2.width, canv2.height);
@@ -1655,18 +1650,18 @@ var input = (function() {
           holdMode: true, // switch to true if you want to hold switch button
           deadZone: {x:0.25,y:0.25}, // for analog stick
           multiplier: {x:4.5,y:4.5}, // how fast the mouse should move
-          click: {b:0,s:false},
-          switch: {b:1,s:false},
-          action: {b:3,s:false},
-          attack: {b:2,s:false},
+          click: {b:0,s:false},      // CD32 RED button
+          switch: {b:1,s:false},     // CD32 BLUE button
+          action: {b:3,s:false},     // CD32 YELLOW button
+          attack: {b:2,s:false},     // CD32 GREEN button
           strafeLeft: {b:4,s:false},
           strafeRight: {b:5,s:false},
-          pause: {b:8,s:false},
+          pause: {b:8,s:false},     // CD32 PLAY button
           up: {b:12,s:false},
           down: {b:13,s:false},
           left: {b:14,s:false},
           right: {b:15,s:false},
-          analog: {up:false,down:false,left:false,right:false},
+          analog: {up:false,down:false,left:false,right:false}, // just internal dir states
         },{
           walkMode: false,
           holdMode: true,

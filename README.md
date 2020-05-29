@@ -73,8 +73,6 @@ Movement keys for player 1 are Q,W,E,A,S,D
 Movement keys for player 2 are 7,8,9,4,5,6
 
 ## ToDo / Soon™
-    - screen scaling
-    - single player scaling
     - build deploy minimized version
     - toggle music + sound
     - Proper random banners
@@ -92,6 +90,8 @@ Movement keys for player 2 are 7,8,9,4,5,6
     + BUG Player should be able to move backwards on stairs (tested, working)
 
 ## TaDa / History / Changelog
+    - 29.05.2020 Changed gamepad layout to match WinUAE CD32 controller emulation on a X360
+                 Added screen scaling
     - 24.05.2020 Added: 2nd mouse cursor. use analog gamepad (x360)
     - 23.05.2020 Fixed: removed auto cast while spell book is opened (thanks to karadoc for reporting)
                  Added: Drop out to save state

@@ -51,8 +51,6 @@ canvas {
 	image-rendering: pixelated;
 	image-rendering: optimizeSpeed;
 	image-rendering: -moz-crisp-edges;
-	image-rendering: -webkit-optimize-contrast;
-	image-rendering: optimize-contrast;
 	-ms-interpolation-mode: nearest-neighbor;
 	cursor: none;
 }
@@ -72,6 +70,9 @@ canvas[data-game-status="loading"] {
 #scrLoader {
 	background: #000 url(../images/behemoth.png) center center no-repeat;
 	image-rendering: pixelated;
+	image-rendering: optimizeSpeed;
+	image-rendering: -moz-crisp-edges;
+	-ms-interpolation-mode: nearest-neighbor;
 	background-size: contain;
 	z-index: 1;
 	position: absolute;

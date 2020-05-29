@@ -585,6 +585,8 @@ function godMode() {
 })();
 
 function doGameStateClicked(x, y) {
+  x /= (canv2.width / canvas.width);
+  y /= (canv2.height / canvas.height);
   for (var p1 in player) {
       var p = player[parseInt(p1)];
       if (p.uiCenterPanel.mode === UI_CENTER_PANEL_GAMESTATE_SAVE) {

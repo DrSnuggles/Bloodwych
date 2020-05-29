@@ -25,7 +25,7 @@
 
   <div class="content">
     <div class="canvas-wrapper">
-      <canvas id="canvas" width="960" height="600" data-game-status="loading"></canvas>
+      <canvas id="canvas" width="320" height="200" data-game-status="loading"></canvas>
       <canvas id="canv2" width="960" height="600" tabindex="1"></canvas>
       <input type="text" class="save-game" id="save-game" maxlength="12" />
     </div>
@@ -68,6 +68,18 @@
   document.ontouchstart = function(e) {
     e.preventDefault();
   };
+  function resizer() {
+    // 320/200 = 1.6
+    if (innerWidth/innerHeight > 1.6) {
+      canv2.style.height = canvas.style.height = innerHeight +'px';
+      canv2.style.width = canvas.style.width = innerHeight*1.6 +'px';
+    } else {
+      canv2.style.width = canvas.style.width = innerWidth +'px';
+      canv2.style.height = canvas.style.height = innerWidth/1.6 +'px';
+    }
+  }
+  onresize = resizer;
+  resizer();
   (function() {
     setViewportScale();
   })();
