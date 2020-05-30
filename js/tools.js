@@ -487,10 +487,10 @@ DrS.get = function(url, type, cb) {
 
 		// return types
 		if (type === 'str') {
-			tmp = DrS.u8ToStr(tmp);
+			tmp = DrS.u8ToRaw(tmp);
 		}
 		if (type === 'json') {
-			tmp = JSON.parse( DrS.u8ToStr(tmp) );
+			tmp = JSON.parse( DrS.u8ToRaw(tmp) );
 		}
 		if (type === 'img') {
 			var t = String.fromCharCode.apply(null, tmp); // string
@@ -550,9 +550,6 @@ DrS.loadZIP = function(zip, cb) {
 		DrS[zip] = UZIP.parse(zdat);
 		if (cb) cb();
 	}, 'arraybuffer');
-};
-DrS.u8ToStr = function(arr) {
-	return new TextDecoder('utf-8').decode(arr);
 };
 DrS.u8ToRaw = function(arr) {
   var ret = [];
