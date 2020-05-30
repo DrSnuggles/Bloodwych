@@ -1603,6 +1603,7 @@ var input = (function() {
       canv2.style.left = canvas.offsetLeft + 'px';
 
       // clear
+      if (typeof ctx2 === "undefined") return; // IE11 does need that
       ctx2.clearRect(0, 0, canv2.width, canv2.height);
 
       // limit to own screen half

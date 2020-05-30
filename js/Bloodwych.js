@@ -358,9 +358,18 @@ function checkAllGfxLoaded() {
           gfxLoaded.done = true;
         }else{
             font = grabFont();
-            preStartScreen();
+            waitForCTX(); // IE11 does need that
         }
     }
+}
+
+// IE11 does need that
+function waitForCTX() {
+  if (typeof ctx === "undefined") {
+    setTimeout(waitForCTX, 200);
+  } else {
+    preStartScreen();
+  }
 }
 
 //Print debug info for player

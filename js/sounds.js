@@ -18,7 +18,7 @@ function initSounds(soundJson, path){
 function playSound(soundName){
     if(soundEnabled) {
         if(soundName !== 'SOUND_NONE') {
-            audioFiles[soundName].currentTime = 0;
+            try {audioFiles[soundName].currentTime = 0;}catch(e){} // IE11 does need that
             audioFiles[soundName].play();
         }
     }

@@ -196,11 +196,15 @@ addEventListener("keyup", function(e) {
     load JSON files with this method
 */
 var dropArea = window;
-
+/* no ES6, IE11 does not like
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
 	dropArea.addEventListener(eventName, preventDefaults, false);
 });
-
+*/
+dropArea.addEventListener('dragenter', preventDefaults, false);
+dropArea.addEventListener('dragover', preventDefaults, false);
+dropArea.addEventListener('dragleave', preventDefaults, false);
+dropArea.addEventListener('drop', preventDefaults, false);
 function preventDefaults (e) {
   e.preventDefault();
   e.stopPropagation();
