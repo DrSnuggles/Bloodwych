@@ -1,1 +1,645 @@
-//all click areas here, e.g. UI_CLICK_STATS_BOX
+{"uiClickArea": [{
+        "x": 0,
+        "y": 0,
+        "width": 50,
+        "height": 44,
+        "id": "CHAMP 1"
+    },
+    {
+        "x": 51,
+        "y": 0,
+        "width": 43,
+        "height": 44,
+        "id": "STATS GRAPH"
+    },
+    {
+        "x": 0,
+        "y": 45,
+        "width": 30,
+        "height": 41,
+        "id": "CHAMP 2"
+    },
+    {
+        "x": 32,
+        "y": 45,
+        "width": 30,
+        "height": 41,
+        "id": "CHAMP 3"
+    },
+    {
+        "x": 64,
+        "y": 45,
+        "width": 30,
+        "height": 41,
+        "id": "CHAMP 4"
+    },
+    {
+        "x": 96,
+        "y": 9,
+        "width": 128,
+        "height": 76,
+        "id": "3D VIEWPORT"
+    },
+    {
+        "x": 226,
+        "y": 1,
+        "width": 94,
+        "height": 19,
+        "id": "NAME TAG AREA"
+    },
+    {
+        "x": 226,
+        "y": 22,
+        "width": 37,
+        "height": 22,
+        "id": "SPELLBOOK"
+    },
+    {
+        "x": 265,
+        "y": 22,
+        "width": 22,
+        "height": 22,
+        "id": "CHARACTER STATS"
+    },
+    {
+        "x": 289,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+        "id": "INTERACT"
+    },
+    {
+        "x": 305,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "OPEN POCKETS"
+    },
+    {
+        "x": 226,
+        "y": 47,
+        "width": 13,
+        "height": 13,
+    "id": "ROTATE LEFT"
+    },
+    {
+        "x": 239,
+        "y": 47,
+        "width": 16,
+        "height": 13,
+    "id": "MOVE FORWARD"
+    },
+    {
+        "x": 255,
+        "y": 47,
+        "width": 13,
+        "height": 13,
+    "id": "ROTATE RIGHT"
+    },
+    {
+        "x": 226,
+        "y": 60,
+        "width": 13,
+        "height": 14,
+    "id": "MOVE LEFT"
+    },
+    {
+        "x": 239,
+        "y": 60,
+        "width": 16,
+        "height": 14,
+    "id": "MOVE BACKWARDS"
+    },
+    {
+        "x": 255,
+        "y": 60,
+        "width": 13,
+        "height": 14,
+    "id": "MOVE RIGHT"
+    },
+    {
+        "x": 269,
+        "y": 45,
+        "width": 17,
+        "height": 16,
+    "id": "ATTACK"
+    },
+    {
+        "x": 269,
+        "y": 61,
+        "width": 17,
+        "height": 15,
+    "id": "DEFEND"
+    },
+    {
+        "x": 225,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 1"
+    },
+    {
+        "x": 241,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 2"
+    },
+    {
+        "x": 257,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 3"
+    },
+    {
+        "x": 273,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 4"
+    },
+    {
+        "x": 289,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 5"
+    },
+    {
+        "x": 305,
+        "y": 22,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 6"
+    },
+    {
+        "x": 225,
+        "y": 38,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 7"
+    },
+    {
+        "x": 241,
+        "y": 38,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 8"
+    },
+    {
+        "x": 257,
+        "y": 38,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 9"
+    },
+    {
+        "x": 273,
+        "y": 38,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 10"
+    },
+    {
+        "x": 289,
+        "y": 38,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 11"
+    },
+    {
+        "x": 305,
+        "y": 38,
+        "width": 16,
+        "height": 16,
+    "id": "POCKET SLOT 12"
+    },
+    {
+        "x": 225,
+        "y": 63,
+        "width": 16,
+        "height": 15,
+    "id": "POCKET CHARACTER 0"
+    },
+    {
+        "x": 241,
+        "y": 63,
+        "width": 16,
+        "height": 15,
+    "id": "POCKET CHARACTER 1"
+    },
+    {
+        "x": 257,
+        "y": 63,
+        "width": 16,
+        "height": 15,
+    "id": "POCKET CHARACTER 2"
+    },
+    {
+        "x": 273,
+        "y": 63,
+        "width": 16,
+        "height": 15,
+    "id": "POCKET CHARACTER 3"
+    },
+    {
+        "x": 289,
+        "y": 63,
+        "width": 16,
+        "height": 15,
+    "id": "POCKET HAND"
+    },
+    {
+        "x": 305,
+        "y": 63,
+        "width": 16,
+        "height": 15,
+    "id": "POCKET BACK"
+    },
+    {
+        "x": 56,
+        "y": 0,
+        "width": 16,
+        "height": 16,
+    "id": "PAUSE BUTTON"
+    },
+    {
+        "x": 73,
+        "y": 0,
+        "width": 16,
+        "height": 16,
+    "id": "SAVE BUTTON"
+    },
+    {
+        "x": 56,
+        "y": 16,
+        "width": 16,
+        "height": 16,
+    "id": "SLEEP BUTTON"
+    },
+    {
+        "x": 73,
+        "y": 16,
+        "width": 16,
+        "height": 16,
+    "id": "LEFT BACK BUTTON"
+    },
+    {
+        "x": 57,
+        "y": 32,
+        "width": 14,
+        "height": 12,
+    "id": "SCROLLUP BUTTON"
+    },
+    {
+        "x": 71,
+        "y": 32,
+        "width": 14,
+        "height": 12,
+    "id": "SCROLLDOWN BUTTON"
+    },
+    {
+        "x": 289,
+        "y": 46,
+        "width": 16,
+        "height": 14,
+    "id": "Character Front Left Icon"
+    },
+    {
+        "x": 305,
+        "y": 46,
+        "width": 16,
+        "height": 14,
+    "id": "Character Front Right Icon"
+    },
+    {
+        "x": 289,
+        "y": 61,
+        "width": 16,
+        "height": 14,
+    "id": "Character Back Left Icon"
+    },
+    {
+        "x": 305,
+        "y": 61,
+        "width": 16,
+        "height": 14,
+    "id": "Character Back Right Icon"
+    },
+    {
+        "x": 225,
+        "y": 0,
+        "width": 95,
+        "height": 86,
+    "id": "Character Stats Exit"
+    },
+    {
+        "x": 255,
+        "y": -1,
+        "width": 35,
+        "height": 8,
+    "id": "Spell Book Exit"
+    },
+    {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 86,
+    "id": "Player Area"
+    },
+    {
+        "x": 135,
+        "y": 25,
+        "width": 50,
+        "height": 15,
+    "id": "Portal - Shelf Top"
+    },
+    {
+        "x": 135,
+        "y": 40,
+        "width": 50,
+        "height": 15,
+    "id": "Portal - Shelf Bottom"
+    },
+    {
+        "x": 135,
+        "y": 25,
+        "width": 50,
+        "height": 29,
+    "id": "Portal - Switch"
+    },
+    {
+        "x": 118,
+        "y": 12,
+        "width": 83,
+        "height": 53,
+    "id": "Portal - Door"
+    },
+    {
+        "x": 110,
+        "y": 70,
+        "width": 45,
+        "height": 8,
+    "id": "Portal - Item Close Left"
+    },
+    {
+        "x": 165,
+        "y": 70,
+        "width": 45,
+        "height": 8,
+    "id": "Portal - Item Close Right"
+    },
+    {
+        "x": 120,
+        "y": 61,
+        "width": 35,
+        "height": 9,
+    "id": "Portal - Item Back Left"
+    },
+    {
+        "x": 165,
+        "y": 61,
+        "width": 35,
+        "height": 9,
+    "id": "Portal - Item Back Right"
+    },
+    {
+        "x": 111,
+        "y": 8,
+        "width": 98,
+        "height": 63,
+    "id": "Portal - Wooden Door"
+    },
+    {
+        "x": 113,
+        "y": 52,
+        "width": 15,
+        "height": 15,
+    "id": "Fairy - Serpent Spell"
+    },
+    {
+        "x": 129,
+        "y": 52,
+        "width": 15,
+        "height": 15,
+    "id": "Fairy - Chaos Spell"
+    },
+    {
+        "x": 145,
+        "y": 52,
+        "width": 15,
+        "height": 15,
+    "id": "Fairy - Dragon Spell"
+    },
+    {
+        "x": 161,
+        "y": 52,
+        "width": 15,
+        "height": 15,
+    "id": "Fairy - Moon Spell"
+    },
+    {
+        "x": 192,
+        "y": 52,
+        "width": 15,
+        "height": 15,
+    "id": "Fairy - Back Button"
+    },
+    {
+        "x": 136,
+        "y": 12,
+        "width": 85,
+        "height": 10,
+    "id": "Fairy - Text Area 1"
+    },
+    {
+        "x": 136,
+        "y": 22,
+        "width": 85,
+        "height": 10,
+    "id": "Fairy - Text Area 2"
+    },
+    {
+        "x": 226,
+        "y": -1,
+        "width": 30,
+        "height": 8,
+    "id": "Spell Book - Turn Page Back"
+    },
+    {
+        "x": 290,
+        "y": -1,
+        "width": 30,
+        "height": 8,
+    "id": "Spell Book - Turn Page Forward"
+    },
+    {
+        "x": 232,
+        "y": 14,
+        "width": 34,
+        "height": 8,
+    "id": "Spell Book - Spell 1"
+    },
+    {
+        "x": 232,
+        "y": 22,
+        "width": 34,
+        "height": 8,
+    "id": "Spell Book - Spell 2"
+    },
+    {
+        "x": 232,
+        "y": 30,
+        "width": 34,
+        "height": 8,
+    "id": "Spell Book - Spell 3"
+    },
+    {
+        "x": 232,
+        "y": 38,
+        "width": 34,
+        "height": 8,
+    "id": "Spell Book - Spell 4"
+    },
+    {
+        "x": 280,
+        "y": 14,
+        "width": 34,
+        "height": 8,
+    "id": "Spell Book - Spell 5"
+    },
+    {
+        "x": 280,
+        "y": 22,
+        "width": 34,
+        "height": 8,
+    "id": "Spell Book - Spell 6"
+    },
+    {
+        "x": 280,
+        "y": 30,
+        "width": 34,
+        "height": 8,
+        "id": "Spell Book - Spell 7"
+    },
+    {
+        "x": 280,
+        "y": 38,
+        "width": 34,
+        "height": 8,
+        "id": "Spell Book - Spell 8"
+    },
+    {
+        "x": 225,
+        "y": 62,
+        "width": 16,
+        "height": 16,
+        "id": "Spell Book - Spell Fire 1"
+    },
+    {
+        "x": 305,
+        "y": 62,
+        "width": 16,
+        "height": 16,
+        "id": "Spell Book - Spell Fire 2"
+    },
+    {
+        "x": 273,
+        "y": 70,
+        "width": 8,
+        "height": 8,
+        "id": "Spell Book - Spell Cost Up"
+    },
+    {
+        "x": 297,
+        "y": 70,
+        "width": 8,
+        "height": 8,
+        "id": "Spell Book - Spell Cost Down"
+    },
+    {
+        "x": 0,
+        "y": 46,
+        "width": 320,
+        "height": 16,
+        "id": "Start Screen - 1. Start One Player Game"
+    },
+    {
+        "x": 0,
+        "y": 62,
+        "width": 320,
+        "height": 16,
+        "id": "Start Screen - 2. Start Two Player Game"
+    },
+    {
+        "x": 0,
+        "y": 86,
+        "width": 320,
+        "height": 16,
+        "id": "Start Screen - 3. Quickstart One Player Game"
+    },
+    {
+        "x": 0,
+        "y": 102,
+        "width": 320,
+        "height": 16,
+        "id": "Start Screen - 4. Quickstart Two Player Game"
+    },
+    {
+        "x": 0,
+        "y": 47,
+        "width": 95,
+        "height": 31,
+        "id": "Communication Area"
+    },
+    {
+        "x": 1,
+        "y": 47,
+        "width": 93,
+        "height": 7,
+        "id": "Communication First Row"
+    },
+    {
+        "x": 1,
+        "y": 55,
+        "width": 93,
+        "height": 7,
+        "id": "Communication Second Row"
+    },
+    {
+        "x": 1,
+        "y": 63,
+        "width": 93,
+        "height": 7,
+        "id": "Communication Third Row"
+    },
+    {
+        "x": 1,
+        "y": 71,
+        "width": 93,
+        "height": 7,
+        "id": "Communication Forth Row"
+    },
+    {
+        "x": 172,
+        "y": 106,
+        "width": 20,
+        "height": 16,
+        "id": "Champion Select 1 Player Pocket"
+    },
+    {
+        "x": 196,
+        "y": 106,
+        "width": 20,
+        "height": 16,
+        "id": "Champion Select 1 START"
+    },
+    {
+        "x": 0,
+        "y": 126,
+        "width": 320,
+        "height": 16,
+        "id": "Start Screen - 5. Resume last game"
+    }]
+}

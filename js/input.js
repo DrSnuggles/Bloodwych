@@ -212,11 +212,11 @@ function doKeyDown(e) {
               loadGFXData(GAME_ID[GAME_BLOODWYCH]);
               break
           case KEY_4: // Custom Data Set
-              gameType = CUSTOM;
-              loadGFXData(GAME_ID[GAME_BLOODWYCH]);
-              startMenu = false;
+              //gameType = CUSTOM;
+              //loadGFXData(GAME_ID[GAME_BLOODWYCH]);
+              //startMenu = false;
               break;
-          case KEY_5: // Map viewer
+          case KEY_5: // Map viewer.. looks like DrS has to do it
 
               break;
       }
@@ -607,11 +607,11 @@ function processCanvasInputMenu(x, y) {
             loadGFXData(GAME_ID[GAME_BLOODWYCH]);
             startMenu = false;
         } else if (uiClickInArea(x, y, UI_CLICK_START_QUICK_TWO_PLAYER)) { //CUSTOM DATA
-            gameType = CUSTOM;
-            loadGFXData(GAME_ID[GAME_BLOODWYCH]);
-            startMenu = false;
+            //gameType = CUSTOM;
+            //loadGFXData(GAME_ID[GAME_BLOODWYCH]);
+            //startMenu = false;
         } else if (uiClickInArea(x, y, UI_CLICK_START_RESUME_GAME)) { //MAP VIEWER
-
+            // looks like DrS has to do that....
         }
     }else{
 

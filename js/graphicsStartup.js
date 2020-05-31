@@ -33,7 +33,7 @@ function preStartScreen() {
     writeFontImage("    1   BLOODWYCH", 34, 50, colourData['GREEN'], FONT_ALIGNMENT_LEFT);
     writeFontImage("    2   EXTENDED LEVELS (WIP)", 34, 66, colourData['GREEN'], FONT_ALIGNMENT_LEFT);
     writeFontImage("    3   BOOK OF SKULLS (WIP)", 34, 90, colourData['GREEN'], FONT_ALIGNMENT_LEFT);
-    writeFontImage("    4   CUSTOM DATA SET (WIP)", 34, 106, colourData['GREY_DARK'], FONT_ALIGNMENT_LEFT);
+    //writeFontImage("    4   CUSTOM DATA SET (WIP)", 34, 106, colourData['GREY_DARK'], FONT_ALIGNMENT_LEFT);
     writeFontImage("    5   MAP VIEWER/EDITOR (WIP)", 34, 129, colourData['GREY_DARK'], FONT_ALIGNMENT_LEFT);
 
     writeFontImage("MIRRORSOFT 1989", 114, 178, colourData['GREY_DARK'], FONT_ALIGNMENT_LEFT);

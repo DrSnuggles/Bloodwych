@@ -90,6 +90,8 @@ Movement keys for player 2 are 7,8,9,4,5,6
     + BUG Player should be able to move backwards on stairs (tested, working)
 
 ## TaDa / History / Changelog
+    - 31.05.2020 Fixed JSON data diff (Git vs Web)
+    - 30.05.2020 Added Edge and IE11 support (Not all features will work)
     - 29.05.2020 Changed gamepad layout to match WinUAE CD32 controller emulation on a X360
                  Added screen scaling
     - 24.05.2020 Added: 2nd mouse cursor. use analog gamepad (x360)
